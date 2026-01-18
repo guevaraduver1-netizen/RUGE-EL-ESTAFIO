@@ -1,0 +1,88 @@
+.tutorial-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.2);
+    backdrop-filter: blur(1px);
+    z-index: 20000;
+    display: none;
+}
+
+/* EL PUNTERO VISUAL */
+.tutorial-pointer {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    border: 4px solid var(--neon);
+    border-radius: 50%;
+    z-index: 20003;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 20px var(--neon);
+    display: none;
+    animation: pulsePointer 1s infinite;
+}
+
+@keyframes pulsePointer {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1.6); opacity: 0; }
+}
+
+.tutorial-step {
+    position: fixed;
+    background: #111;
+    border: 2px solid var(--neon);
+    border-radius: 25px;
+    padding: 25px;
+    /* AJUSTE ANTI-DESBORDE LATERAL */
+    width: 90%; 
+    max-width: 320px;
+    box-sizing: border-box; 
+    /* SEGURIDAD DE ALTURA */
+    max-height: 85vh;
+    overflow-y: auto;
+    /* ------------------- */
+    z-index: 20005;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+}
+
+.tutorial-step h4 {
+    color: var(--neon);
+    margin: 0 0 12px 0;
+    font-size: 24px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.tutorial-step p {
+    color: #eee;
+    font-size: 19px;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.btn-tutorial {
+    background: var(--neon);
+    color: black;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-size: 17px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.btn-skip {
+    background: transparent;
+    color: #888;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.highlight-target {
+    position: relative;
+    z-index: 20001 !important;
+    box-shadow: 0 0 35px var(--neon) !important;
+    pointer-events: none;
+    border-radius: inherit;
+}
