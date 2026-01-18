@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Colección - RUGE EL ESTADIO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style id="dynamic-theme">
+        /* --- MOTOR DE FUENTES RUGE EL ESTADIO --- */
+        @font-face { font-family: 'Jersey'; src: url('assets/fonts/Jersey.ttf'); }
+        @font-face { font-family: 'Bangers'; src: url('assets/fonts/Bangers.ttf'); }
+        @font-face { font-family: 'Smooch'; src: url('assets/fonts/SmoochSans-Bold.ttf'); }
+        @font-face { font-family: 'Afacad'; src: url('assets/fonts/Afacad-Bold.ttf'); }
+        @font-face { font-family: 'Permanent Marker'; src: url('assets/fonts/PermanentMarker.ttf'); }
+        @font-face { font-family: 'Gloria'; src: url('assets/fonts/Gloria.ttf'); }
+        @font-face { font-family: 'Goldman'; src: url('assets/fonts/Goldman-Bold.ttf'); }
+        @font-face { font-family: 'Gruppo'; src: url('assets/fonts/Gruppo.ttf'); }
+        @font-face { font-family: 'Josefin Slab'; src: url('assets/fonts/JosefinSlab-Bold.ttf'); }
+        @font-face { font-family: 'Bahianita'; src: url('assets/fonts/Bahianita.ttf'); }
+        @font-face { font-family: 'Caveat'; src: url('assets/fonts/Caveat-Bold.ttf'); }
+        @font-face { font-family: 'Rubik Iso'; src: url('assets/fonts/RubikIso.ttf'); }
+        @font-face { font-family: 'Tagesschrift'; src: url('assets/fonts/Tagesschrift.ttf'); }
+
+        :root { 
+            --neon: #2ecc71; 
+            --border: rgba(46, 204, 113, 0.2); 
+            --glass: rgba(255, 255, 255, 0.05); 
+            --fuente-principal: 'Afacad', sans-serif;
+        }
+    </style>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            font-family: var(--fuente-principal); 
+            background: #000; color: white; overflow-x: hidden; 
+        }
+        
+        button, .filter-btn, .tag, .footer-name, .empty, h3, td, .stat-label, .stat-value {
+            font-family: var(--fuente-principal) !important;
+        }
+
+        .bg-blur { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background-size: cover; background-position: center; z-index: -2;
+            transition: 0.5s;
+        }
+
+        .header { 
+            position: fixed; top: 0; width: 100%; height: 60px; 
+            background: rgba(0, 0, 0, 0.9); 
+            border-bottom: 2px solid var(--neon); z-index: 2000; 
+            backdrop-filter: blur(15px); display: flex; align-items: center; justify-content: center;
+        }
+        .header h3 { letter-spacing: 5px; font-size: 13px; font-weight: 900; text-transform: uppercase; }
+
+        .filter-nav {
+            position: fixed; top: 60px; width: 100%; z-index: 1900;
+            display: flex; overflow-x: auto; padding: 12px; gap: 8px;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+            scrollbar-width: none; border-bottom: 1px solid var(--border);
+        }
+        .filter-nav::-webkit-scrollbar { display: none; }
+        
+        .filter-btn {
+            padding: 8px 18px; background: var(--glass);
+            border: 1px solid var(--border); border-radius: 20px;
+            font-size: 10px; white-space: nowrap; color: #fff; opacity: 0.6;
+            text-transform: uppercase; font-weight: 900; transition: 0.3s;
+            cursor: pointer;
+        }
+        .filter-btn.active { background: var(--neon); color: #000; opacity: 1; border-color: var(--neon); box-shadow: 0 0 10px var(--neon); }
+
+        .container { padding: 140px 15px 40px; min-height: 100vh; }
+
+        .grid { display: grid; gap: 15px; width: 100%; max-width: 500px; margin: 0 auto; }
+        .grid.standard { grid-template-columns: repeat(2, 1fr); }
+
+        .item-card { 
+            background: var(--glass); border-radius: 12px; overflow: hidden; 
+            border: 1px solid var(--border); border-bottom: 3px solid var(--neon); 
+            position: relative; aspect-ratio: 3/4; backdrop-filter: blur(5px);
+            cursor: pointer; animation: fadeInScale 0.5s ease backwards;
+        }
+        .item-card img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .tag { 
+            position: absolute; top: 8px; left: 8px; background: var(--neon); color: #000; 
+            font-size: 8px; font-weight: 900; padding: 2px 8px; border-radius: 4px; z-index: 4; 
+        }
+        
+        .del { 
+            position: absolute; top: 8px; right: 8px; 
+            background: rgba(255, 71, 87, 0.9); color: white; border: none; 
+            border-radius: 50%; width: 28px; height: 28px; z-index: 10; 
+            display: flex; align-items: center; justify-content: center; font-size: 10px;
+        }
+
+        .footer-name { 
+            position: absolute; bottom: 0; width: 100%; 
+            background: linear-gradient(transparent, rgba(0,0,0,0.95)); 
+            padding: 15px 5px; text-align: center; font-size: 9px; font-weight: 900; letter-spacing: 1px;
+        }
+
+        #modalDetail {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.98); z-index: 3000;
+            display: none; align-items: center; justify-content: center;
+            backdrop-filter: blur(20px);
+        }
+        .modal-content { width: 85%; max-width: 350px; text-align: center; position: relative; }
+        .m-img-box { position: relative; border-radius: 15px; overflow: hidden; border: 2px solid var(--neon); margin-bottom: 15px; box-shadow: 0 0 20px var(--border); }
+        .m-img-box img { width: 100%; display: block; }
+
+        .stats-table { width: 100%; font-size: 11px; margin-bottom: 20px; border-collapse: collapse; }
+        .stat-label { text-align: left; padding: 8px; opacity: 0.6; border-bottom: 1px solid var(--border); text-transform: uppercase; }
+        .stat-value { text-align: right; padding: 8px; color: var(--neon); font-weight: 900; border-bottom: 1px solid var(--border); }
+
+        .empty { text-align: center; padding-top: 100px; opacity: 0.3; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+    </style>
+</head>
+<body>
+  
+    <div class="bg-blur" id="bg-main"></div>
+
+    <header class="header">
+        <a href="index.html" style="position:absolute; left:20px; color:var(--neon); font-size: 18px;"><i class="fa-solid fa-arrow-left"></i></a>
+        <h3 data-key="coll_title">MI COLECCIÓN</h3>
+    </header>
+
+    <nav class="filter-nav">
+        <div class="filter-btn active" onclick="filtrar('JUGADORES', this)" data-key="f_players">EQUIPOS</div>
+        <div class="filter-btn" onclick="filtrar('LOCALES', this)" data-key="f_locals">LOCALES</div>
+        <div class="filter-btn" onclick="filtrar('ESTADIOS', this)" data-key="f_stadiums">ESTADIOS</div>
+        <div class="filter-btn" onclick="filtrar('ÁRBITROS', this)" data-key="f_referee">ÁRBITROS</div>
+        <div class="filter-btn" onclick="filtrar('LEYENDAS', this)" data-key="f_legends">LEYENDAS</div>
+        <div class="filter-btn" onclick="filtrar('TÉCNICOS', this)" data-key="f_technical">TÉCNICOS</div>
+        <div class="filter-btn" onclick="filtrar('PÓSTERS', this)" data-key="f_posters">PÓSTERS</div>
+    </nav>
+
+    <div class="container">
+        <div id="favGrid" class="grid standard"></div>
+        <div id="noItems" class="empty" style="display:none;" data-key="no_items">ESTA SECCIÓN ESTÁ VACÍA</div>
+    </div>
+
+    <div id="modalDetail" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="m-img-box"><img id="m-img" src=""></div>
+            <h3 id="m-name" style="letter-spacing: 2px; margin-bottom: 10px; color: var(--neon);"></h3>
+            <table class="stats-table" id="m-stats"></table>
+        </div>
+    </div>
+
+    <script>
+        // Sincronización con la base de datos de album.html
+        const albumData = {
+               'JUGADORES': [
+            { isTeam: true, nombre: 'COLOMBIA', logo: 'assets/imagen/escudos/equipos/col.jpg', content: [
+             { nombre: 'JAVIER SUAREZ', img: 'assets/imagen/laminas/equipos/colombia/javiers.jpg', rango: 'CRACK', stats: { "Posición": "Extremo", "Equipo": "Bayern Munich" } },
+             { nombre: 'KEVIN MIER', img: 'assets/imagen/laminas/equipos/colombia/kevinm.jpg', rango: 'LEYENDA', stats: { "Posición": "Volante", "Equipo": "Club León" } },
+             { nombre: 'RICHARD RÍOS', img: 'assets/imagen/laminas/equipos/colombia/richardr.jpg', rango: 'MOTOR', stats: { "Posición": "Mediocentro", "Equipo": "Benfica" } },
+             { nombre: 'JHON ARIAS', img: 'assets/imagen/laminas/equipos/colombia/jarias.jpg', rango: 'MAGO', stats: { "Posición": "Extremo", "Equipo": "Wolverhampton" } },
+             { nombre: 'DANIEL MUÑOZ', img: 'assets/imagen/laminas/equipos/colombia/dmunoz.jpg', rango: 'MURO', stats: { "Posición": "Lateral", "Equipo": "Crystal Palace" } },
+             { nombre: 'LUIS DÍAZ', img: 'assets/imagen/laminas/equipos/colombia/luchod.jpg', rango: 'CRACK', stats: { "Posición": "Extremo", "Nacionalidad": "Colombiana" } }, 
+             { nombre: 'JAMES R.', img: 'assets/imagen/laminas/equipos/colombia/james.jpg', rango: 'ÍDOLO', stats: { "Posición": "Volante", "Nacionalidad": "Colombiana" } }
+        ]}],
+            'LOCALES': [
+            { isTeam: true, nombre: 'NACIONAL', logo: 'assets/imagen/escudos/locales/nal.png', content: [
+                { nombre: 'D. OSPINA', img: 'assets/imagen/laminas/locales/nacional/ospina.jpg', rango: 'MURO', stats: { "Posición": "Portero", "Equipo": "A. Nacional" } }
+                ] },
+            { isTeam: true, nombre: 'MEDELLIN', logo: 'assets/imagen/escudos/locales/Dim.png', content: [
+                { nombre: 'JARLAN BARRERA', img: 'assets/imagen/laminas/locales/Dim/jarlan.jpg', rango: 'IDOLO', stats: { "Posición": "Delantero", "Equipo": "Ind. Medellín" } }
+                
+          ] }],
+            
+            'ESTADIOS': [
+            { nombre: '', img: 'assets/imagen/laminas/metro.jpg', equipo: 'COLOMBIA', rango: 'SEDE', stats: { "Ciudad": "Barranquilla", "Capacidad": "46.692" } }
+            ],
+            'ÁRBITROS': [], 'LEYENDAS': [], 'TÉCNICOS': [], 'PÓSTERS': []
+        };
+
+        const dictionary = {
+            es: { coll_title: "MI COLECCIÓN", f_players: "EQUIPOS", f_locals: "LOCALES", f_stadiums: "ESTADIOS", f_posters: "PÓSTERS", f_legends: "LEYENDAS", f_referee: "ÁRBITROS", f_technical: "TÉCNICOS", no_items: "ESTA SECCIÓN ESTÁ VACÍA" },
+            en: { coll_title: "MY COLLECTION", f_players: "TEAMS", f_locals: "LOCALS", f_stadiums: "STADIUMS", f_posters: "POSTERS", f_legends: "LEGENDS", f_referee: "REFEREES", f_technical: "TECHNICAL", no_items: "THIS SECTION IS EMPTY" }
+        };
+
+        let currentFilter = 'JUGADORES';
+
+        function applyLanguage() {
+            const lang = localStorage.getItem('userLang') || 'es';
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (dictionary[lang][key]) el.innerText = dictionary[lang][key];
+            });
+        }
+
+        function applyTheme() {
+            const color = localStorage.getItem('themeColor') || '#2ecc71';
+            const bg = localStorage.getItem('themeBg') || 'assets/imagen/fondos/fondo.jpg';
+            const font = localStorage.getItem('fuentePersonalizada') || 'Afacad';
+            const dark = parseFloat(localStorage.getItem('themeDark')) || 0.0;
+            const blurValue = localStorage.getItem('themeBlurValue') || '20';
+            document.documentElement.style.setProperty('--neon', color);
+            document.documentElement.style.setProperty('--border', color + '33');
+            document.documentElement.style.setProperty('--fuente-principal', `'${font}', sans-serif`);
+            const bgMain = document.getElementById('bg-main');
+            if(bgMain) bgMain.style.backgroundImage = `url('${bg}')`;
+            bgMain.style.filter = `brightness(${1.1 - dark}) blur(${blurValue}px)`;
+
+            
+        }
+
+        function render() {
+            const grid = document.getElementById('favGrid');
+            const empty = document.getElementById('noItems');
+            const favNames = JSON.parse(localStorage.getItem('laminasFavoritas')) || [];
+            
+            grid.innerHTML = '';
+            let count = 0;
+
+            // Buscamos las láminas favoritas en la sección actual
+            for (let itemData of (albumData[currentFilter] || [])) {
+                let list = itemData.isTeam ? itemData.content : [itemData];
+                list.forEach(item => {
+                    if (favNames.includes(item.nombre)) {
+                        count++;
+                        grid.innerHTML += `
+                            <div class="item-card" onclick="openDetail('${item.nombre}')">
+                                <div class="tag">${item.rango || currentFilter}</div>
+                                <button class="del" onclick="event.stopPropagation(); borrar('${item.nombre}')">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                                <img src="${item.img}">
+                                <div class="footer-name">${item.nombre}</div>
+                            </div>`;
+                    }
+                });
+            }
+
+            empty.style.display = count === 0 ? 'block' : 'none';
+        }
+
+        function openDetail(name) {
+            let found = null;
+            for(let sec in albumData) {
+                albumData[sec].forEach(e => {
+                    let res = e.isTeam ? e.content.find(i => i.nombre === name) : (e.nombre === name ? e : null);
+                    if(res) found = res;
+                });
+                if(found) break;
+            }
+            if(!found) return;
+
+            document.getElementById('m-img').src = found.img;
+            document.getElementById('m-name').innerText = found.nombre;
+            let h = "";
+            for (let [k, v] of Object.entries(found.stats)) {
+                h += `<tr><td class="stat-label">${k}</td><td class="stat-value">${v}</td></tr>`;
+            }
+            document.getElementById('m-stats').innerHTML = h;
+            document.getElementById('modalDetail').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('modalDetail').style.display = 'none'; }
+
+        function filtrar(tipo, btn) {
+            currentFilter = tipo;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            render();
+        }
+
+        function borrar(nombre) {
+            let favs = JSON.parse(localStorage.getItem('laminasFavoritas')) || [];
+            favs = favs.filter(n => n !== nombre);
+            localStorage.setItem('laminasFavoritas', JSON.stringify(favs));
+            render();
+        }
+
+        window.onload = () => { applyTheme(); applyLanguage(); render(); }
+    </script>
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Suscripciones - RUGE EL ESTADIO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style id="dynamic-theme">
+        /* --- MOTOR DE FUENTES RUGE EL ESTADIO --- */
+        @font-face { font-family: 'Jersey'; src: url('assets/fonts/Jersey.ttf'); }
+        @font-face { font-family: 'Bangers'; src: url('assets/fonts/Bangers.ttf'); }
+        @font-face { font-family: 'Smooch'; src: url('assets/fonts/SmoochSans-Bold.ttf'); }
+        @font-face { font-family: 'Afacad'; src: url('assets/fonts/Afacad-Bold.ttf'); }
+        @font-face { font-family: 'Permanent Marker'; src: url('assets/fonts/PermanentMarker.ttf'); }
+        @font-face { font-family: 'Gloria'; src: url('assets/fonts/Gloria.ttf'); }
+        @font-face { font-family: 'Goldman'; src: url('assets/fonts/Goldman-Bold.ttf'); }
+        @font-face { font-family: 'Gruppo'; src: url('assets/fonts/Gruppo.ttf'); }
+        @font-face { font-family: 'Josefin Slab'; src: url('assets/fonts/JosefinSlab-Bold.ttf'); }
+        @font-face { font-family: 'Bahianita'; src: url('assets/fonts/Bahianita.ttf'); }
+        @font-face { font-family: 'Caveat'; src: url('assets/fonts/Caveat-Bold.ttf'); }
+        @font-face { font-family: 'Rubik Iso'; src: url('assets/fonts/RubikIso.ttf'); }
+        @font-face { font-family: 'Tagesschrift'; src: url('assets/fonts/Tagesschrift.ttf'); }
+
+        :root { 
+            --neon: #2ecc71; 
+            --border: rgba(46, 204, 113, 0.2); 
+            --glass: rgba(255, 255, 255, 0.05); 
+            --fuente-principal: 'Afacad', sans-serif;
+        }
+    </style>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: var(--fuente-principal); background: #000; color: white; overflow-x: hidden; }
+        
+        button, a, h2, h3, p, span, li {
+            font-family: var(--fuente-principal) !important;
+        }
+
+        .bg-blur { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background-size: cover; background-position: center; z-index: -2; transition: 0.5s; opacity: 0.4; }
+        
+        .header { position: fixed; top: 0; width: 100%; height: 60px; background: rgba(0, 0, 0, 0.9); border-bottom: 2px solid var(--neon); z-index: 2000; backdrop-filter: blur(15px); display: flex; align-items: center; justify-content: center; }
+        .header h3 { letter-spacing: 5px; font-size: 13px; font-weight: 900; text-transform: uppercase; }
+
+        .container { padding: 80px 20px 40px; min-height: 100vh; max-width: 500px; margin: 0 auto; }
+        .info-text { text-align: center; margin-bottom: 25px; font-size: 14px; opacity: 0.8; line-height: 1.4; }
+
+        .stream-card { background: var(--glass); border-radius: 20px; border: 1px solid var(--border); padding: 20px; margin-bottom: 20px; backdrop-filter: blur(10px); position: relative; border-bottom: 3px solid var(--neon); transition: 0.3s; }
+        
+        .card-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .platform-logo { width: 60px; height: 60px; border-radius: 15px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; padding: 8px; border: 1px solid var(--border); }
+        .platform-logo img { width: 100%; height: 100%; object-fit: contain; }
+        
+        .platform-info h2 { font-size: 18px; text-transform: uppercase; letter-spacing: 1px; color: #fff; }
+        .platform-info p { font-size: 12px; color: var(--neon); font-weight: 900; }
+
+        .features { list-style: none; margin-bottom: 20px; }
+        .features li { font-size: 13px; margin-bottom: 8px; opacity: 0.7; display: flex; align-items: center; gap: 10px; }
+        .features li i { color: var(--neon); font-size: 12px; }
+
+        .btn-external { 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%; 
+            padding: 16px; 
+            border-radius: 15px; 
+            border: none; 
+            background: var(--neon); 
+            color: #000; 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            text-decoration: none;
+            cursor: pointer; 
+            transition: 0.3s; 
+        }
+        .btn-external:active { transform: scale(0.96); }
+
+        .tag-oficial { position: absolute; top: 15px; right: 20px; font-size: 10px; background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 5px; opacity: 0.5; font-weight: 900; }
+    </style>
+</head>
+<body>
+    <div class="bg-blur" id="bg-main"></div>
+    
+    <header class="header">
+        <button onclick="window.history.back()" style="position:absolute; left:10px; color:var(--neon); font-size: 24px; background:transparent; border:none; width:45px; height:45px; cursor:pointer;"><i class="fa-solid fa-chevron-left"></i></button>
+        <h3 data-key="header_title">SUSCRIPCIONES TV</h3>
+    </header>
+
+    <div class="container">
+        <p class="info-text" data-key="info_main">Activa tu cuenta en las plataformas oficiales para vivir la pasión del fútbol sin interrupciones.</p>
+
+        <div id="streaming-list">
+            
+            <div class="stream-card">
+                <span class="tag-oficial" data-key="tag_star">ESTRELLA</span>
+                <div class="card-header">
+                    <div class="platform-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/f/f3/Win_Sports_logo.png" alt="Win"></div>
+                    <div class="platform-info">
+                        <h2>Win Play</h2>
+                        <p data-key="sub_win">FÚTBOL COLOMBIANO</p>
+                    </div>
+                </div>
+                <ul class="features">
+                    <li data-key="win_f1"><i class="fa-solid fa-circle-play"></i> Win Sports+ Online 24/7</li>
+                    <li data-key="win_f2"><i class="fa-solid fa-check"></i> Liga, Torneo y Copa BetPlay</li>
+                </ul>
+                <a href="https://www.winplay.co/" target="_blank" class="btn-external" onclick="vibrar()" data-key="btn_win">
+                    SUSCRIBIRSE EN WIN <i class="fa-solid fa-cart-shopping"></i>
+                </a>
+            </div>
+
+            <div class="stream-card">
+                <span class="tag-oficial" data-key="tag_rec">RECOMENDADO</span>
+                <div class="card-header">
+                    <div class="platform-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/0/05/DGO_logo.png" alt="DGO"></div>
+                    <div class="platform-info">
+                        <h2>DGO</h2>
+                        <p data-key="sub_dgo">ELIMINATORIAS Y MÁS</p>
+                    </div>
+                </div>
+                <ul class="features">
+                    <li data-key="dgo_f1"><i class="fa-solid fa-globe"></i> Exclusivo: Selección Colombia</li>
+                    <li data-key="dgo_f2"><i class="fa-solid fa-layer-group"></i> DSPORTS, ESPN y Win Sports+</li>
+                </ul>
+                <a href="https://www.directvgo.com/co/home/plan" target="_blank" class="btn-external" onclick="vibrar()" data-key="btn_dgo">
+                    VER PLANES DGO <i class="fa-solid fa-unlock-keyhole"></i>
+                </a>
+            </div>
+
+            <div class="stream-card">
+                <span class="tag-oficial" data-key="tag_pre">PREMIUM</span>
+                <div class="card-header">
+                    <div class="platform-logo" style="background:#000;"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney_plus_logo.svg" alt="Disney"></div>
+                    <div class="platform-info">
+                        <h2>Disney+ (ESPN)</h2>
+                        <p data-key="sub_dis">FÚTBOL EUROPEO</p>
+                    </div>
+                </div>
+                <ul class="features">
+                    <li data-key="dis_f1"><i class="fa-solid fa-trophy"></i> Champions y Ligas de Europa</li>
+                    <li data-key="dis_f2"><i class="fa-solid fa-video"></i> Eventos premium en vivo</li>
+                </ul>
+                <a href="https://www.disneyplus.com/es-co/welcome/plans" target="_blank" class="btn-external" onclick="vibrar()" data-key="btn_dis">
+                    ACTIVAR DISNEY+ <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const dictionary = {
+            es: {
+                header_title: "SUSCRIPCIONES TV",
+                info_main: "Activa tu cuenta en las plataformas oficiales para vivir la pasión del fútbol sin interrupciones.",
+                tag_star: "ESTRELLA",
+                tag_rec: "RECOMENDADO",
+                tag_pre: "PREMIUM",
+                sub_win: "FÚTBOL COLOMBIANO",
+                win_f1: "Win Sports+ Online 24/7",
+                win_f2: "Liga, Torneo y Copa BetPlay",
+                btn_win: "SUSCRIBIRSE EN WIN",
+                sub_dgo: "ELIMINATORIAS Y MÁS",
+                dgo_f1: "Exclusivo: Selección Colombia",
+                dgo_f2: "DSPORTS, ESPN y Win Sports+",
+                btn_dgo: "VER PLANES DGO",
+                sub_dis: "FÚTBOL EUROPEO",
+                dis_f1: "Champions y Ligas de Europa",
+                dis_f2: "Eventos premium en vivo",
+                btn_dis: "ACTIVAR DISNEY+"
+            },
+            en: {
+                header_title: "TV SUBSCRIPTIONS",
+                info_main: "Activate your account on official platforms to experience the passion of football without interruptions.",
+                tag_star: "STAR",
+                tag_rec: "RECOMMENDED",
+                tag_pre: "PREMIUM",
+                sub_win: "COLOMBIAN FOOTBALL",
+                win_f1: "Win Sports+ Online 24/7",
+                win_f2: "BetPlay League, Tournament & Cup",
+                btn_win: "SUBSCRIBE ON WIN",
+                sub_dgo: "QUALIFIERS AND MORE",
+                dgo_f1: "Exclusive: Colombia National Team",
+                dgo_f2: "DSPORTS, ESPN and Win Sports+",
+                btn_dgo: "VIEW DGO PLANS",
+                sub_dis: "EUROPEAN FOOTBALL",
+                dis_f1: "Champions & European Leagues",
+                dis_f2: "Premium live events",
+                btn_dis: "ACTIVATE DISNEY+"
+            }
+        };
+
+        function applyLanguage() {
+            const userLang = localStorage.getItem('userLang') || 'es';
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (dictionary[userLang][key]) {
+                    // Mantener el icono si existe
+                    const icon = el.querySelector('i');
+                    el.innerText = dictionary[userLang][key];
+                    if (icon) el.appendChild(icon);
+                }
+            });
+        }
+
+        function applyTheme() {
+            const color = localStorage.getItem('themeColor') || '#2ecc71';
+            const bg = localStorage.getItem('themeBg') || 'assets/imagen/fondos/fondo.jpg';
+            const font = localStorage.getItem('fuentePersonalizada') || 'Afacad';
+   const dark = parseFloat(localStorage.getItem('themeDark')) || 0.0;
+            const blurValue = localStorage.getItem('themeBlurValue') || '20';
+
+            document.documentElement.style.setProperty('--neon', color);
+            document.documentElement.style.setProperty('--border', color + '33');
+            document.documentElement.style.setProperty('--fuente-principal', `'${font}', sans-serif`);
+
+            const bgMain = document.getElementById('bg-main');
+            if(bgMain) bgMain.style.backgroundImage = `url('${bg}')`;
+            
+        }
+
+        function vibrar() { if(navigator.vibrate) navigator.vibrate(50); }
+        
+        window.onload = () => {
+            applyTheme();
+            applyLanguage();
+        };
+    </script>
+</body>
+</html>

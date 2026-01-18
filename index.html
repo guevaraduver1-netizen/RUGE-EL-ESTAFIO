@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mundial 2026 - Ruge el Estadio</title>
+    <link rel="stylesheet" href="css/all.min.css">
+    <link rel="stylesheet" href="css/tutorial.css">
+
+    <style>
+        /* --- MOTOR DE FUENTES RUGE EL ESTADIO --- */
+        @font-face { font-family: 'Jersey'; src: url('assets/fonts/Jersey.ttf'); }
+        @font-face { font-family: 'Bangers'; src: url('assets/fonts/Bangers.ttf'); }
+        @font-face { font-family: 'Smooch'; src: url('assets/fonts/SmoochSans-Bold.ttf'); }
+        @font-face { font-family: 'Afacad'; src: url('assets/fonts/Afacad-Bold.ttf'); }
+        @font-face { font-family: 'Permanent Marker'; src: url('assets/fonts/PermanentMarker.ttf'); }
+        @font-face { font-family: 'Gloria'; src: url('assets/fonts/Gloria.ttf'); }
+        @font-face { font-family: 'Goldman'; src: url('assets/fonts/Goldman-Bold.ttf'); }
+        @font-face { font-family: 'Gruppo'; src: url('assets/fonts/Gruppo.ttf'); }
+        @font-face { font-family: 'Josefin Slab'; src: url('assets/fonts/JosefinSlab-Bold.ttf'); }
+        @font-face { font-family: 'Bahianita'; src: url('assets/fonts/Bahianita.ttf'); }
+        @font-face { font-family: 'Caveat'; src: url('assets/fonts/Caveat-Bold.ttf'); }
+        @font-face { font-family: 'Rubik Iso'; src: url('assets/fonts/RubikIso.ttf'); }
+        @font-face { font-family: 'Tagesschrift'; src: url('assets/fonts/Tagesschrift.ttf'); }
+
+        :root { 
+            --neon: #2ecc71; 
+            --glass: rgba(255, 255, 255, 0.1); 
+            --border: rgba(46, 204, 113, 0.2); 
+            --fuente-principal: 'Afacad', sans-serif;
+        }
+
+        body { 
+            margin: 0; padding: 0; 
+            font-family: var(--fuente-principal); 
+            background: #000; color: white; height: 100vh; overflow: hidden;
+            display: flex; flex-direction: column;
+        }
+
+        button, input, select, .nav-item span, .top-btn span, .auth-title, 
+        .auth-footer a, .banner-year, .banner-text, .dropdown-content a {
+            font-family: var(--fuente-principal) !important;
+        }
+
+        .bg-blur { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center center; z-index: -1; }
+
+        /* --- ESTILOS RESUMEN DIARIO --- */
+        .summary-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; text-align: left; font-size: 12px; line-height: 1.4; }
+        .summary-item i { color: var(--neon); margin-top: 3px; font-size: 10px; }
+        .loading-shimmer { opacity: 0.5; animation: blink 1.5s infinite; font-size: 10px; letter-spacing: 1px; }
+
+        .top-nav, .main-content, .bottom-nav { visibility: hidden; }
+        .auth-ready .top-nav, .auth-ready .main-content, .auth-ready .bottom-nav { visibility: visible; }
+        
+        /* AUTH SYSTEM */
+        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 9999; display: none; justify-content: center; align-items: center; transition: 0.8s cubic-bezier(0.87, 0, 0.13, 1); }
+        .auth-container { width: 85%; max-width: 380px; padding: 30px 25px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 30px; text-align: center; box-shadow: 0 0 40px rgba(0,0,0,0.5); }
+        .auth-logo { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--neon); margin-bottom: 15px; cursor: pointer; }
+        .auth-title { font-size: 18px; font-weight: 900; margin: 0; letter-spacing: 3px; text-transform: uppercase; }
+        .auth-slogan { font-size: 9px; color: var(--neon); letter-spacing: 2px; margin-bottom: 20px; font-weight: 700; font-style: italic; text-transform: uppercase; }
+        .auth-input-group { position: relative; margin-bottom: 12px; }
+        .auth-input-group i.main-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--neon); font-size: 14px; }
+        .auth-input-group .toggle-pass { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #666; font-size: 14px; cursor: pointer; padding: 5px; }
+        .auth-input-group input { width: 100%; padding: 14px 40px 14px 45px; background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: 15px; color: white; outline: none; box-sizing: border-box; font-size: 13px; }
+        .btn-auth { width: 100%; padding: 16px; background: var(--neon); border: none; border-radius: 15px; color: #000; font-weight: 900; text-transform: uppercase; cursor: pointer; letter-spacing: 1px; margin-top: 10px; }
+        .auth-footer { margin-top: 20px; font-size: 10px; display: flex; flex-direction: column; gap: 10px; }
+        .auth-footer a { color: #aaa; text-decoration: none; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+        #btn-secret-reset { display: none; margin-top: 15px; color: #ff4757; font-size: 9px; font-weight: bold; cursor: pointer; border: 1px solid #ff4757; padding: 8px; border-radius: 10px; text-transform: uppercase; }
+        #toast-auth { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: #000; border: 1px solid var(--neon); padding: 12px 25px; border-radius: 50px; color: white; font-size: 12px; font-weight: 800; transition: 0.5s; z-index: 10000; text-align: center; white-space: nowrap; }
+        #toast-auth.show { bottom: 40px; }
+        .auth-hidden { transform: translateY(-100%) !important; opacity: 0; pointer-events: none; }
+
+        /* UI ELEMENTS */
+        .top-nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px; z-index: 100; }
+        .top-btn { background: rgba(0,0,0,0.6); border: 1px solid var(--border); border-radius: 12px; height: 75px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: white; cursor: pointer; animation: slideDown 0.5s ease forwards; opacity: 0; backdrop-filter: blur(5px); }
+        .top-btn i { font-size: 20px; color: var(--neon); margin-bottom: 5px; }
+        .top-btn span { font-size: 9px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .dropdown-content { display: none; position: absolute; top: 85px; width: 150px; background: rgba(0,0,0,0.8); border: 1px solid var(--neon); border-radius: 12px; z-index: 200; backdrop-filter: blur(20px); box-shadow: 0 10px 30px rgba(0,0,0,0.8); overflow: hidden; transform-origin: top center; }
+        .dropdown-content.show { display: block; animation: dropAnim 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        .dropdown-content a { color: white; padding: 14px 18px; text-decoration: none; display: block; font-size: 12px; border-bottom: 1px solid var(--border); }
+        .dropdown-content a:active { background: var(--neon); color: black; }
+        
+        .main-content { flex: 1; display: flex; align-items: center; justify-content: center; animation: zoomIn 0.8s ease forwards; opacity: 0; margin-bottom: 50px; }
+        .banner-box { background: rgba(0,0,0,0.4); border-radius: 30px; padding: 30px 40px; text-align: center; border: 1px solid var(--border); backdrop-filter: blur(5px); cursor: pointer; width: 85%; max-width: 400px; }
+        .banner-year { font-size: 35px; font-weight: 900; color: var(--neon); margin: 0; filter: drop-shadow(0 0 10px var(--neon)); text-transform: uppercase; pointer-events: none; }
+        .banner-text { font-size: 9px; letter-spacing: 3px; opacity: 0.7; text-transform: uppercase; pointer-events: none; margin-bottom: 15px; }
+        .mini-resumen { font-size: 10px; border-top: 1px solid var(--border); padding-top: 15px; color: #fff; font-weight: bold; pointer-events: none; }
+
+        .bottom-nav { display: grid; grid-template-columns: repeat(4, 1fr); background: rgba(0,0,0,0.95); border-top: 2px solid var(--neon); padding: 10px 0 20px; z-index: 100; animation: slideUp 0.5s ease forwards; opacity: 0; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: white; }
+        .nav-item i { font-size: 26px; color: var(--neon); margin-bottom: 5px; }
+        .nav-item span { font-size: 8px; font-weight: bold; text-transform: uppercase; }
+
+        .overlay-mundial { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 10000; display: none; align-items: center; justify-content: center; padding: 0; }
+        .tabla-container { width: 92%; max-width: 420px; background: rgba(0,0,0,.6); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 25px; padding: 25px; box-shadow: 0 0 30px rgba(0,0,0,0.5); display: flex; flex-direction: column; box-sizing: border-box; animation: zoomIn 0.5s ease-out; }
+        
+        #tabla-mundial-content { width: 100%; text-align: center; }
+        .tabla-scroll { max-height: 55vh; overflow-y: auto; scrollbar-width: none; width: 100%; }
+        .tabla-scroll::-webkit-scrollbar { display: none; }
+
+        .modal-pass { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 5000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(15px); }
+        .pass-box { background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 30px; border-radius: 25px; width: 85%; max-width: 320px; text-align: center; }
+
+        @keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+        @keyframes dropAnim { from { opacity: 0; transform: translateY(-15px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes zoomIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body class="auth-ready">
+
+    <div class="bg-blur" id="main-bg"></div>
+    <div id="toast-auth"></div>
+
+    <div id="overlay-mundial" class="overlay-mundial" onclick="this.style.display='none'">
+        <div class="tabla-container" onclick="event.stopPropagation()">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px; color:var(--neon);">
+                <i class="fa-solid fa-bolt-lightning"></i>
+                <span style="font-weight:900; letter-spacing:2px; font-size:12px;">REPORTE TÁCTICO RUGE</span>
+            </div>
+            <div id="tabla-mundial-content" class="tabla-scroll"></div>
+            <button class="btn-auth" onclick="document.getElementById('overlay-mundial').style.display='none'" style="margin-top: 20px; padding: 12px; font-size: 10px;">VOLVER AL ESTADIO</button>
+        </div>
+    </div>
+
+    <div id="modalPass" class="modal-pass">
+        <div class="pass-box">
+            <h3 style="font-size: 14px; letter-spacing: 2px; margin-bottom: 20px;" data-key="title_pass">SEGURIDAD</h3>
+            <div class="auth-input-group">
+                <input type="password" id="old-pass" data-placeholder="ph_old_pass" placeholder="CLAVE ACTUAL" style="padding: 12px; font-size: 11px;">
+                <i class="fa-solid fa-eye toggle-pass" onclick="togglePass('old-pass')"></i>
+            </div>
+            <div class="auth-input-group">
+                <input type="password" id="new-pass" data-placeholder="ph_new_pass" placeholder="NUEVA CLAVE" style="padding: 12px; font-size: 11px;">
+                <i class="fa-solid fa-eye toggle-pass" onclick="togglePass('new-pass')"></i>
+            </div>
+            <button class="btn-auth" onclick="confirmarCambioPass()" style="padding: 12px; font-size: 11px;" data-key="btn_pass">ACTUALIZAR</button>
+            <p onclick="cerrarPass()" style="margin-top: 15px; font-size: 10px; opacity: 0.5; cursor: pointer;" data-key="btn_cancel">CANCELAR</p>
+        </div>
+    </div>
+
+    <div id="auth-overlay">
+        <div class="auth-container">
+            <img src="assets/imagen/logos/logo_ruge.jpg" class="auth-logo" id="secret-trigger" onclick="handleSecretClick()" onerror="this.src='1766889633827.jpg'">
+            <h1 class="auth-title">RUGE EL ESTADIO</h1>
+            <p class="auth-slogan" data-key="slogan">LA PASIÓN NO CALLA</p>
+            
+            <div id="auth-form">
+                <div id="extra-fields-top"></div> <div class="auth-input-group">
+                    <i class="fa-solid fa-envelope main-icon"></i>
+                    <input type="email" id="email-in" data-placeholder="ph_email" placeholder="CORREO ELECTRÓNICO">
+                </div>
+                <div class="auth-input-group">
+                    <i class="fa-solid fa-key main-icon"></i>
+                    <input type="password" id="pass-in" data-placeholder="ph_pass" placeholder="CONTRASEÑA">
+                    <i class="fa-solid fa-eye toggle-pass" onclick="togglePass('pass-in')"></i>
+                </div>
+                <div id="extra-fields-bottom"></div> <button class="btn-auth" id="btn-main-auth" onclick="handleAuth()" data-key="btn_login">INGRESAR</button>
+                
+                <div class="auth-footer">
+                    <a href="#" id="toggle-link" onclick="toggleMode()" data-key="link_register">¿NO TIENES CUENTA? REGÍSTRATE</a>
+                    <a href="#" style="opacity: 0.5;" id="forgot-pass" onclick="showAuthToast('SOPORTE: RUGE@ESTADIO.COM')" data-key="link_forgot">¿OLVIDASTE TU CONTRASEÑA?</a>
+                    <div id="btn-secret-reset" onclick="limpiarYReiniciar()" data-key="secret_reset">BORRADO DE SEGURIDAD ACTIVO</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="top-nav">
+        <a href="noticias.html" class="top-btn" onclick="AudioManager.play('pop')">
+            <i class="fa-solid fa-file-lines"></i><span data-key="nav_news">Noticias</span>
+        </a>
+        <div class="top-btn-wrapper" style="position: relative;">
+            <div class="top-btn" onclick="toggleDrop('menuOpciones'); AudioManager.play('pop')">
+                <i class="fa-solid fa-sliders"></i><span data-key="nav_opts">Opciones</span>
+            </div>
+            <div id="menuOpciones" class="dropdown-content" style="left: 0;">
+                <a href="favoritos.html" data-key="drop_favs">Favoritos</a>
+                <a href="musica.html" data-key="drop_music">Rugido del hincha</a>
+                <a href="compartir.html" data-key="drop_share">Compartir</a>
+            </div>
+        </div>
+        <div class="top-btn-wrapper" style="position: relative;">
+            <div class="top-btn" onclick="toggleDrop('menuUsuario'); AudioManager.play('pop')">
+                <i class="fa-solid fa-user-circle"></i><span data-key="nav_user">Usuario</span>
+            </div>
+            <div id="menuUsuario" class="dropdown-content" style="right: 0;">
+                <a href="perfil.html" data-key="drop_profile">Mi Perfil</a>
+                <a href="estadisticas.html" data-key="drop_stats">Estadísticas</a>
+                <a href="soporte.html" data-key="drop_support">Soporte</a>
+                <a href="suscripciones.html" data-key="drop_subscriptions">Suscripciones</a>
+                <a href="mundial.html" data-key="drop_world_cup_2026">Mundial 2026</a>
+                <a href="#" onclick="abrirPass()" data-key="drop_security">Seguridad</a>
+                <a href="#" onclick="logoutAuth()" data-key="drop_logout">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="banner-box" id="banner-central">
+            <h1 class="banner-year">RUGE 2026</h1>
+            <div class="banner-text" id="status-text">ESCANEAR REPORTE DIARIO</div>
+            <div class="mini-resumen" id="mini-resumen">
+                <span class="loading-shimmer">SINCRONIZANDO SATÉLITE...</span>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bottom-nav">
+        <a href="album.html" class="nav-item" onclick="AudioManager.play('pop')">
+            <i class="fa-solid fa-book-open"></i><span data-key="bot_album">Álbum</span>
+        </a>
+        <a href="goles.html" class="nav-item" onclick="AudioManager.play('pop')">
+            <i class="fa-solid fa-circle-play"></i><span data-key="bot_goals">Goles</span>
+        </a>
+        <a href="personalizar.html" class="nav-item" onclick="AudioManager.play('pop')">
+            <i class="fa-solid fa-palette"></i><span data-key="bot_custom">Personalizar</span>
+        </a>
+        <a href="partidos.html" class="nav-item" onclick="AudioManager.play('pop')">
+            <i class="fa-solid fa-stopwatch"></i><span data-key="bot_match">Partidos</span>
+        </a>
+    </footer>
+
+    <script>
+        const API_KEY_ALLSPORTS = '70183699b2377c17cfc4aa22c9b836e735c656cb36aa29e18827edd463bbdbe8';
+        let isLogin = true;
+        let clickCount = 0;
+        let lastTap = 0;
+
+        // --- EASTER EGG (14 TOQUES) ---
+        function handleSecretClick() {
+            clickCount++;
+            if(clickCount === 14) {
+                document.getElementById('btn-secret-reset').style.display = 'block';
+                showAuthToast("PROTOCOLO DE BORRADO ACTIVADO");
+                clickCount = 0;
+            }
+            setTimeout(() => { if(clickCount < 14) clickCount = 0; }, 5000);
+        }
+
+        function limpiarYReiniciar() {
+            if(confirm("⚠ ¿BORRAR TODO? Se perderán cuentas y configuraciones.")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        // --- SISTEMA DE REGISTRO / LOGIN ---
+        function toggleMode() {
+            isLogin = !isLogin;
+            const topFields = document.getElementById('extra-fields-top');
+            const bottomFields = document.getElementById('extra-fields-bottom');
+            const btn = document.getElementById('btn-main-auth');
+            const link = document.getElementById('toggle-link');
+            const lang = localStorage.getItem('userLang') || 'es';
+
+            if(!isLogin) {
+                topFields.innerHTML = `
+                    <div class="auth-input-group">
+                        <i class="fa-solid fa-user main-icon"></i>
+                        <input type="text" id="user-in" placeholder="${dictionary[lang].ph_user}">
+                    </div>`;
+                bottomFields.innerHTML = `
+                    <div class="auth-input-group">
+                        <i class="fa-solid fa-check-double main-icon"></i>
+                        <input type="password" id="pass-confirm" placeholder="${dictionary[lang].ph_confirm}">
+                    </div>`;
+                btn.innerText = dictionary[lang].btn_register;
+                link.innerText = dictionary[lang].link_login;
+            } else {
+                topFields.innerHTML = "";
+                bottomFields.innerHTML = "";
+                btn.innerText = dictionary[lang].btn_login;
+                link.innerText = dictionary[lang].link_register;
+            }
+        }
+
+        function handleAuth() {
+            const lang = localStorage.getItem('userLang') || 'es';
+            const email = document.getElementById('email-in').value;
+            const pass = document.getElementById('pass-in').value;
+            let db = JSON.parse(localStorage.getItem('usuarios_registrados')) || [];
+
+            if (isLogin) {
+                const u = db.find(x => x.email === email && x.pass === pass);
+                if (u) { loginOk(u); } else { showAuthToast(dictionary[lang].msg_error); }
+            } else {
+                const nom = document.getElementById('user-in').value;
+                const confirm = document.getElementById('pass-confirm').value;
+                if (!nom || !email || !pass) return showAuthToast(dictionary[lang].msg_complete);
+                if (pass !== confirm) return showAuthToast(dictionary[lang].msg_mismatch);
+                if (db.find(x => x.email === email)) return showAuthToast(dictionary[lang].msg_exists);
+
+                const nuevo = { nombre: nom, email, pass };
+                db.push(nuevo); 
+                localStorage.setItem('usuarios_registrados', JSON.stringify(db));
+                loginOk(nuevo);
+            }
+        }
+
+        function loginOk(u) {
+            localStorage.setItem('sesion_activa', JSON.stringify(u));
+            const overlay = document.getElementById('auth-overlay');
+            overlay.classList.add('auth-hidden');
+            document.body.classList.add('auth-ready');
+            setTimeout(() => { overlay.style.display = 'none'; }, 800);
+        }
+
+        // --- UI & TEMA (COPIADO FIELMENTE) ---
+        function loadCustomTheme() {
+            const color = localStorage.getItem('themeColor') || '#2ecc71';
+            const bg = localStorage.getItem('themeBg') || 'assets/imagen/fondos/fondo.jpg';
+            const dark = parseFloat(localStorage.getItem('themeDark') || 0.0);
+            const blur = localStorage.getItem('themeBlurValue') || 20;
+            const font = localStorage.getItem('fuentePersonalizada') || 'Afacad';
+            document.documentElement.style.setProperty('--neon', color);
+            document.documentElement.style.setProperty('--border', color + '33');
+            document.documentElement.style.setProperty('--fuente-principal', `'${font}', sans-serif`);
+            const bgEl = document.getElementById('main-bg');
+            if(bgEl) {
+                bgEl.style.backgroundImage = `url('${bg}')`;
+                bgEl.style.filter = `brightness(${1 - dark}) blur(${blur}px)`;
+            }
+        }
+
+        const dictionary = {
+            es: { slogan: "LA PASIÓN NO CALLA", nav_news: "Noticias", nav_opts: "Opciones", nav_user: "Usuario", drop_favs: "Favoritos", drop_music: "Rugido del hincha", drop_share: "Compartir", drop_profile: "Mi Perfil", drop_stats: "Estadísticas", drop_security: "Seguridad", drop_logout: "Cerrar Sesión", drop_support: "Soporte", drop_subscriptions: "Suscripciones", drop_world_cup_2026: "mundial 2026", banner_msg: "actualmente estamos trabajando para mejorar tu experiencia", bot_album: "Álbum", bot_goals: "Goles", bot_custom: "Personalizar", bot_match: "Partidos", title_pass: "SEGURIDAD", btn_pass: "ACTUALIZAR", btn_cancel: "CANCELAR", ph_email: "CORREO ELECTRÓNICO", ph_pass: "CONTRASEÑA", ph_user: "NOMBRE DE USUARIO", ph_confirm: "CONFIRMAR CONTRASEÑA", ph_old_pass: "CLAVE ACTUAL", ph_new_pass: "NUEVA CLAVE", btn_login: "INGRESAR", btn_register: "CREAR CUENTA", link_register: "¿NO TIENES CUENTA? REGÍSTRATE", link_login: "¿YA TIENES CUENTA? INICIA SESIÓN", link_forgot: "¿OLVIDASTE TU CONTRASEÑA?", secret_reset: "BORRADO DE SEGURIDAD ACTIVO", msg_welcome: "BIENVENIDO", msg_error: "⚠ DATOS INCORRECTOS", msg_complete: "⚠ COMPLETA TODO", msg_mismatch: "⚠ LAS CONTRASEÑAS NO COINCIDEN", msg_exists: "⚠ EL CORREO YA EXISTE" },
+            en: { slogan: "PASSION NEVER STAYS SILENT", nav_news: "News", nav_opts: "Options", nav_user: "User", drop_favs: "Favorites", drop_music: "Fan's Roar", drop_share: "Share", drop_profile: "My Profile", drop_stats: "Statistics", drop_security: "Security", drop_logout: "Logout", drop_support: "Support", drop_subscriptions: "Subscriptions", drop_world_cup_2026: "world cup 2026", banner_msg: "currently working to improve your experience", bot_album: "Album", bot_goals: "Goals", bot_custom: "Customize", bot_match: "Matches", title_pass: "SECURITY", btn_pass: "UPDATE", btn_cancel: "CANCEL", ph_email: "EMAIL ADDRESS", ph_pass: "PASSWORD", ph_user: "USERNAME", ph_confirm: "CONFIRM PASSWORD", ph_old_pass: "CURRENT PASSWORD", ph_new_pass: "NEW PASSWORD", btn_login: "LOGIN", btn_register: "CREATE ACCOUNT", link_register: "NO ACCOUNT? REGISTER", link_login: "HAVE AN ACCOUNT? LOGIN", link_forgot: "FORGOT YOUR PASSWORD?", secret_reset: "SECURITY ERASE ACTIVE", msg_welcome: "WELCOME", msg_error: "⚠ INVALID DATA", msg_complete: "⚠ COMPLETE ALL FIELDS", msg_mismatch: "⚠ PASSWORDS DO NOT MATCH", msg_exists: "⚠ EMAIL ALREADY EXISTS" }
+        };
+
+        function applyLanguage() {
+            const lang = localStorage.getItem('userLang') || 'es';
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (dictionary[lang][key]) el.innerText = dictionary[lang][key];
+            });
+        }
+
+        // --- REPORTES API ---
+        async function generarResumenRUGE() {
+            const content = document.getElementById('tabla-mundial-content');
+            const mini = document.getElementById('mini-resumen');
+            const hoy = new Date().toISOString().split('T')[0];
+            const cache = JSON.parse(localStorage.getItem('ruge_daily_report') || '{}');
+            
+            if(cache.date === hoy) {
+                content.innerHTML = cache.fullHtml;
+                mini.innerHTML = cache.miniHtml;
+                return;
+            }
+
+            try {
+                const resp = await fetch(`https://apiv2.allsportsapi.com/football/?met=Fixtures&APIkey=${API_KEY_ALLSPORTS}&from=${hoy}&to=${hoy}`);
+                const data = await resp.json();
+                const total = data.result ? data.result.length : 0;
+                const ligasCount = {};
+                if(data.result) data.result.forEach(m => ligasCount[m.league_name] = (ligasCount[m.league_name] || 0) + 1);
+                const ligaTop = Object.entries(ligasCount).sort((a,b) => b[1] - a[1])[0]?.[0] || "Internacional";
+                const miniHtml = `HOY: ${total} PARTIDOS EN EL RADAR | ${ligaTop.substring(0,15)}...`;
+                const fullHtml = `<div class="summary-item"><i class="fa-solid fa-calendar-day"></i><span>Detectados <b>${total}</b> encuentros para hoy.</span></div><div class="summary-item"><i class="fa-solid fa-trophy"></i><span><b>${ligaTop}</b> domina la cartelera.</span></div>`;
+                localStorage.setItem('ruge_daily_report', JSON.stringify({ date: hoy, fullHtml, miniHtml }));
+                content.innerHTML = fullHtml; mini.innerHTML = miniHtml;
+            } catch (e) { mini.innerHTML = "SINCRONIZACIÓN OFFLINE"; }
+        }
+
+        // --- EVENTOS GENERALES ---
+        window.onload = () => {
+            loadCustomTheme();
+            applyLanguage();
+            generarResumenRUGE();
+            const overlay = document.getElementById('auth-overlay');
+            if (localStorage.getItem('sesion_activa')) {
+                overlay.style.display = 'none';
+                document.body.classList.add('auth-ready');
+            } else { overlay.style.display = 'flex'; }
+        };
+
+        function showAuthToast(t) { const toast = document.getElementById('toast-auth'); toast.innerText = t; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3000); }
+        function togglePass(id) { const input = document.getElementById(id); input.type = (input.type === "password") ? "text" : "password"; }
+        function logoutAuth() { localStorage.removeItem('sesion_activa'); location.reload(); }
+        function toggleDrop(id) { document.querySelectorAll('.dropdown-content').forEach(d => { if(d.id !== id) d.classList.remove('show'); }); document.getElementById(id).classList.toggle('show'); }
+        function abrirPass() { document.getElementById('modalPass').style.display = 'flex'; }
+        function cerrarPass() { document.getElementById('modalPass').style.display = 'none'; }
+
+        document.getElementById('banner-central').onclick = () => {
+            const currentTime = new Date().getTime();
+            if (currentTime - lastTap < 300) document.getElementById('overlay-mundial').style.display = 'flex';
+            lastTap = currentTime;
+        };
+    </script>
+    <script src="js/audio-manager.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/tutorial.js"></script>
+
+</body>
+</html>

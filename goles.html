@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RUGE EL ESTADIO - Goles que rujo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style id="dynamic-theme">
+        /* --- MOTOR DE FUENTES LOCALES RUGE EL ESTADIO --- */
+        @font-face { font-family: 'Jersey'; src: url('assets/fonts/Jersey.ttf'); }
+        @font-face { font-family: 'Bangers'; src: url('assets/fonts/Bangers.ttf'); }
+        @font-face { font-family: 'Smooch'; src: url('assets/fonts/SmoochSans-Bold.ttf'); }
+        @font-face { font-family: 'Afacad'; src: url('assets/fonts/Afacad-Bold.ttf'); }
+        @font-face { font-family: 'Permanent Marker'; src: url('assets/fonts/PermanentMarker.ttf'); }
+        @font-face { font-family: 'Gloria'; src: url('assets/fonts/Gloria.ttf'); }
+        @font-face { font-family: 'Goldman'; src: url('assets/fonts/Goldman-Bold.ttf'); }
+        @font-face { font-family: 'Gruppo'; src: url('assets/fonts/Gruppo.ttf'); }
+        @font-face { font-family: 'Josefin Slab'; src: url('assets/fonts/JosefinSlab-Bold.ttf'); }
+        @font-face { font-family: 'Bahianita'; src: url('assets/fonts/Bahianita.ttf'); }
+        @font-face { font-family: 'Caveat'; src: url('assets/fonts/Caveat-Bold.ttf'); }
+        @font-face { font-family: 'Rubik Iso'; src: url('assets/fonts/RubikIso.ttf'); }
+        @font-face { font-family: 'Tagesschrift'; src: url('assets/fonts/Tagesschrift.ttf'); }
+
+        :root { 
+            --neon: #2ecc71; 
+            --border: rgba(46, 204, 113, 0.2); 
+            --glass: rgba(255, 255, 255, 0.05); 
+            --fuente-principal: 'Afacad', sans-serif;
+        }
+    </style>
+
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        /* FUERZA BRUTA PARA LA FUENTE (Exceptuando Iconos) */
+        body, button:not(.fa-solid), span:not(.fa-solid), div, h3, .goal-title, .goal-comp, .api-connect-btn {
+            font-family: var(--fuente-principal) !important;
+        }
+
+        /* Asegurar que los iconos usen su propia fuente */
+        .fa-solid, .fa-circle-play, .fa-chevron-left {
+            font-family: "Font Awesome 6 Free" !important;
+            font-weight: 900;
+        }
+
+        body { 
+            margin: 0; padding: 0; 
+            background: #000; color: white; overflow-x: hidden; text-align: center; 
+        }
+
+        .bg-blur { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1; background-size: cover; background-position: center; transition: 0.5s; background-attachment: fixed; }
+        
+        .header { 
+            position: fixed; top: 0; width: 100%; height: 60px; 
+            display: flex; align-items: center; justify-content: center; 
+            background: rgba(0, 0, 0, 0.95); border-bottom: 2px solid var(--neon); 
+            z-index: 2000; backdrop-filter: blur(10px); 
+        }
+
+        .back-btn { 
+            position: absolute; left: 10px; color: var(--neon); 
+            font-size: 24px; background: transparent; border: none; 
+            cursor: pointer; z-index: 2100; display: flex; align-items: center; justify-content: center;
+            width: 45px; height: 45px;
+        }
+        
+        .container { padding: 80px 15px 40px; display: flex; flex-direction: column; align-items: center; gap: 20px; min-height: 100vh; }
+
+        .api-connect-btn { 
+            width: 100%; max-width: 400px; padding: 15px; 
+            background: rgba(0,0,0,0.6); border: 2px solid var(--neon); 
+            border-radius: 12px; color: var(--neon); 
+            font-weight: 900; font-size: 11px; letter-spacing: 2px; 
+            text-transform: uppercase; cursor: pointer; 
+        }
+
+        .goal-card { 
+            background: var(--glass); border: 1px solid var(--border); 
+            border-radius: 20px; overflow: hidden; width: 100%; 
+            max-width: 400px; backdrop-filter: blur(15px); 
+            -webkit-backdrop-filter: blur(15px); margin-bottom: 25px; 
+        }
+        
+        .media-box { width: 100%; position: relative; padding-bottom: 56.25%; height: 0; background: #000; }
+        
+        .play-overlay { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            display: flex; align-items: center; justify-content: center; 
+            z-index: 50; cursor: pointer; background: rgba(0,0,0,0.4); 
+        }
+        .play-overlay i { color: white; font-size: 60px; filter: drop-shadow(0 0 15px var(--neon)); }
+        .play-overlay img { position: absolute; top:0; left:0; width:100%; height:100%; object-fit: cover; z-index: -1; opacity: 0.8; }
+        
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+        
+        .goal-info { padding: 15px; text-align: left; background: rgba(0,0,0,0.5); }
+        .goal-comp { color: var(--neon); font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+        .goal-title { font-size: 16px; font-weight: 900; margin-top: 5px; color: #fff; line-height: 1.2; }
+    </style>
+</head>
+<body>
+    <div class="bg-blur" id="bg-main"></div>
+    <header class="header">
+        <button class="back-btn" onclick="location.href='index.html';">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <h3 style="margin:0; letter-spacing: 5px; font-size: 14px; font-weight: 900;">GOLES QUE RUJO</h3>
+    </header>
+
+    <div class="container">
+        <button class="api-connect-btn" onclick="cargarGolesScoreBat()">
+            <span id="api-text">SINCRO DE RUGIDOS REALES</span>
+        </button>
+        <div id="video-grid" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
+    </div>
+
+    <script>
+        let videosData = [];
+
+        function applyTheme() {
+            const color = localStorage.getItem('themeColor') || '#2ecc71';
+            const bg = localStorage.getItem('themeBg') || 'assets/imagen/fondos/fondo.jpg';
+            const dark = parseFloat(localStorage.getItem('themeDark')) || 0.0;
+            const font = localStorage.getItem('fuentePersonalizada') || 'Afacad';
+
+            document.documentElement.style.setProperty('--neon', color);
+            document.documentElement.style.setProperty('--fuente-principal', `'${font}', sans-serif`);
+            
+            const bgMain = document.getElementById('bg-main');
+            if(bgMain) {
+                bgMain.style.backgroundImage = `url('${bg}')`;
+                bgMain.style.filter = `brightness(${1.1 - dark}) blur(0px)`;
+            }
+        }
+
+        async function cargarGolesScoreBat() {
+            const grid = document.getElementById('video-grid');
+            const apiBtnText = document.getElementById('api-text');
+            apiBtnText.innerText = "BUSCANDO GOLES...";
+
+            try {
+                const resp = await fetch('https://www.scorebat.com/video-api/v3/');
+                const data = await resp.json();
+                if (data.response) {
+                    videosData = data.response.slice(0, 10);
+                    grid.innerHTML = videosData.map((video, index) => `
+                        <div class="goal-card">
+                            <div class="media-box" id="container-${index}">
+                                <div class="play-overlay" id="overlay-${index}" onclick="reproducirVideo(${index})">
+                                    <img src="${video.thumbnail}">
+                                    <i class="fa-solid fa-circle-play"></i>
+                                </div>
+                                <div id="video-slot-${index}"></div>
+                            </div>
+                            <div class="goal-info">
+                                <span class="goal-comp">${video.competition}</span>
+                                <div class="goal-title">${video.title}</div>
+                            </div>
+                        </div>`).join('');
+                    
+                    apiBtnText.innerText = "RUGIDOS ACTUALIZADOS";
+                    applyTheme();
+                }
+            } catch (e) { 
+                apiBtnText.innerText = "ERROR DE CONEXIÓN"; 
+            }
+        }
+
+        function reproducirVideo(index) {
+            videosData.forEach((_, i) => {
+                if(i !== index) {
+                    const slot = document.getElementById(`video-slot-${i}`);
+                    if(slot) slot.innerHTML = "";
+                    const ov = document.getElementById(`overlay-${i}`);
+                    if(ov) ov.style.display = "flex";
+                }
+            });
+
+            const slot = document.getElementById(`video-slot-${index}`);
+            const overlay = document.getElementById(`overlay-${index}`);
+
+            const embed = videosData[index].videos[0].embed
+                .replace(/width="\d+"/, 'width="100%"')
+                .replace(/height="\d+"/, 'height="100%"');
+
+            overlay.style.display = "none";
+            slot.innerHTML = `<div class="video-wrapper">${embed}</div>`;
+        }
+
+        window.onload = () => { 
+            applyTheme(); 
+            cargarGolesScoreBat(); 
+        };
+    </script>
+</body>
+</html>

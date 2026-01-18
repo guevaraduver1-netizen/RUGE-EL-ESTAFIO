@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Estadísticas - RUGE EL ESTADIO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style id="dynamic-theme">
+        /* --- MOTOR DE FUENTES RUGE EL ESTADIO --- */
+        @font-face { font-family: 'Jersey'; src: url('assets/fonts/Jersey.ttf'); }
+        @font-face { font-family: 'Bangers'; src: url('assets/fonts/Bangers.ttf'); }
+        @font-face { font-family: 'Smooch'; src: url('assets/fonts/SmoochSans-Bold.ttf'); }
+        @font-face { font-family: 'Afacad'; src: url('assets/fonts/Afacad-Bold.ttf'); }
+        @font-face { font-family: 'Permanent Marker'; src: url('assets/fonts/PermanentMarker.ttf'); }
+        @font-face { font-family: 'Gloria'; src: url('assets/fonts/Gloria.ttf'); }
+        @font-face { font-family: 'Goldman'; src: url('assets/fonts/Goldman-Bold.ttf'); }
+        @font-face { font-family: 'Gruppo'; src: url('assets/fonts/Gruppo.ttf'); }
+        @font-face { font-family: 'Josefin Slab'; src: url('assets/fonts/JosefinSlab-Bold.ttf'); }
+        @font-face { font-family: 'Bahianita'; src: url('assets/fonts/Bahianita.ttf'); }
+        @font-face { font-family: 'Caveat'; src: url('assets/fonts/Caveat-Bold.ttf'); }
+        @font-face { font-family: 'Rubik Iso'; src: url('assets/fonts/RubikIso.ttf'); }
+        @font-face { font-family: 'Tagesschrift'; src: url('assets/fonts/Tagesschrift.ttf'); }
+
+        :root { 
+            --neon: #2ecc71; 
+            --border: rgba(46, 204, 113, 0.2); 
+            --glass: rgba(255, 255, 255, 0.05); 
+            --fuente-principal: 'Afacad', sans-serif;
+        }
+    </style>
+
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+        
+        body { 
+            margin: 0; padding: 0; 
+            font-family: var(--fuente-principal); 
+            background: #000; color: white; min-height: 100vh; overflow-x: hidden; 
+        }
+
+        .header-fixed h3, .circle-chart, h4, .stat-val, .stat-label, .cat-info, .section-title {
+            font-family: var(--fuente-principal) !important;
+        }
+        
+        .bg-blur { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1; background-size: cover; background-position: center; transition: 0.5s; background-attachment: fixed; }
+        
+        .header-fixed { height: 65px; background: rgba(0,0,0,0.85); border-bottom: 2px solid var(--neon); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; position: sticky; top: 0; z-index: 2000; backdrop-filter: blur(10px); }
+        .btn-home { color: var(--neon); font-size: 22px; text-decoration: none; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; }
+
+        .container { padding: 25px 20px; animation: fadeIn 0.5s ease; }
+
+        .main-stat {
+            background: var(--glass); border: 1px solid var(--border); border-radius: 25px;
+            padding: 30px; text-align: center; margin-bottom: 25px; backdrop-filter: blur(10px);
+        }
+        .circle-chart { width: 120px; height: 120px; border-radius: 50%; border: 8px solid var(--border); border-top: 8px solid var(--neon); margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; box-shadow: 0 0 20px var(--border); transition: 0.5s; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .stat-card {
+            background: rgba(0,0,0,0.4); border: 1px solid var(--border);
+            border-radius: 20px; padding: 20px; text-align: center; backdrop-filter: blur(5px);
+        }
+        .stat-card i { font-size: 20px; color: var(--neon); margin-bottom: 10px; display: block; }
+        .stat-val { font-size: 22px; font-weight: 900; display: block; }
+        .stat-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.6; font-weight: 900; }
+
+        .category-list { margin-top: 30px; background: var(--glass); border-radius: 25px; padding: 20px; border: 1px solid var(--border); backdrop-filter: blur(10px); }
+        .cat-item { margin-bottom: 15px; }
+        .cat-info { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 5px; font-weight: 900; text-transform: uppercase; }
+        .progress-bg { height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--neon); border-radius: 10px; width: 0; transition: width 1.5s cubic-bezier(0.1, 0.5, 0.5, 1); box-shadow: 0 0 10px var(--neon); }
+
+        @keyframes fadeIn { from { opacity: 0.0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div class="bg-blur" id="bg-main"></div>
+
+    <header class="header-fixed">
+        <a href="index.html" class="btn-home"><i class="fa-solid fa-house"></i></a>
+        <h3 style="letter-spacing: 4px; font-size: 16px; font-weight: 900;" data-key="header_stats">ESTADÍSTICAS</h3>
+        <div style="width:45px"></div>
+    </header>
+
+    <main class="container">
+        <div class="main-stat">
+            <div class="circle-chart" id="totalPercent">0%</div>
+            <h4 style="font-size: 12px; letter-spacing: 2px; font-weight: 900;" data-key="album_progress">COMPLETADO DEL ÁLBUM</h4>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fa-solid fa-layer-group"></i>
+                <span class="stat-val" id="countStickers">0</span>
+                <span class="stat-label" data-key="label_stickers">LÁMINAS</span>
+            </div>
+            <div class="stat-card">
+                <i class="fa-solid fa-heart"></i>
+                <span class="stat-val" id="countFavs">0</span>
+                <span class="stat-label" data-key="label_favs">FAVORITOS</span>
+            </div>
+        </div>
+
+        <div class="category-list" id="categoryContainer">
+            <p class="section-title" style="font-size: 10px; letter-spacing: 2px; margin-bottom: 15px; text-align: center; opacity: 0.5; font-weight: 900;" data-key="section_advance">AVANCE POR SECCIÓN</p>
+        </div>
+    </main>
+
+    <script>
+        // Data de referencia para cálculos (debe coincidir con álbum.html)
+        const albumDataRef = {
+            'JUGADORES': 2, // Basado en los ejemplos actuales
+            'LOCALES': 2,
+            'ESTADIOS': 1,
+            'ÁRBITROS': 1,
+            'LEYENDAS': 1,
+            'TÉCNICOS': 1,
+            'PÓSTERS': 1
+        };
+
+        const dictionary = {
+            es: {
+                header_stats: "ESTADÍSTICAS",
+                album_progress: "COMPLETADO DEL ÁLBUM",
+                label_stickers: "LÁMINAS",
+                label_favs: "FAVORITOS",
+                section_advance: "AVANCE POR SECCIÓN",
+                JUGADORES: "EQUIPOS",
+                LOCALES: "LOCALES",
+                ESTADIOS: "ESTADIOS",
+                ÁRBITROS: "ÁRBITROS",
+                LEYENDAS: "LEYENDAS",
+                TÉCNICOS: "TÉCNICOS",
+                PÓSTERS: "PÓSTERS"
+            },
+            en: {
+                header_stats: "STATISTICS",
+                album_progress: "ALBUM PROGRESS",
+                label_stickers: "STICKERS",
+                label_favs: "FAVORITES",
+                section_advance: "SECTION PROGRESS",
+                JUGADORES: "TEAMS",
+                LOCALES: "LOCAL CLUBS",
+                ESTADIOS: "STADIUMS",
+                ÁRBITROS: "REFEREES",
+                LEYENDAS: "LEGENDS",
+                TÉCNICOS: "COACHES",
+                PÓSTERS: "POSTERS"
+            }
+        };
+
+        function applyLanguage() {
+            const lang = localStorage.getItem('userLang') || 'es';
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (dictionary[lang][key]) el.innerText = dictionary[lang][key];
+            });
+        }
+
+        function applyTheme() {
+            const color = localStorage.getItem('themeColor') || '#2ecc71';
+            const bg = localStorage.getItem('themeBg') || 'assets/imagen/fondos/fondo.jpg';
+            const dark = parseFloat(localStorage.getItem('themeDark')) || 0.0;
+            const blurValue = localStorage.getItem('themeBlurValue') || '20';
+            const font = localStorage.getItem('fuentePersonalizada') || 'Afacad';
+            
+            document.documentElement.style.setProperty('--neon', color);
+            document.documentElement.style.setProperty('--border', color + '33');
+            document.documentElement.style.setProperty('--fuente-principal', `'${font}', sans-serif`);
+
+            const bgMain = document.getElementById('bg-main');
+            if(bgMain) {
+                bgMain.style.backgroundImage = `url('${bg}')`;
+                bgMain.style.filter = `brightness(${1.1 - dark}) blur(${blurValue}px)`;
+            }
+        }
+
+        function updateStats() {
+            const lang = localStorage.getItem('userLang') || 'es';
+            const des = JSON.parse(localStorage.getItem('laminasDesbloqueadas')) || [];
+            const favs = JSON.parse(localStorage.getItem('laminasFavoritas')) || [];
+            
+            // Calculamos el total de láminas existentes en la data de referencia
+            const TOTAL_EXISTENTE = Object.values(albumDataRef).reduce((a, b) => a + b, 0) || 1; // Evitar división por 0
+
+            document.getElementById('countStickers').innerText = des.length;
+            document.getElementById('countFavs').innerText = favs.length;
+            
+            const percent = Math.round((des.length / TOTAL_EXISTENTE) * 100);
+            document.getElementById('totalPercent').innerText = percent + "%";
+
+            const container = document.getElementById('categoryContainer');
+            const sectionTitle = dictionary[lang].section_advance;
+            container.innerHTML = `<p class="section-title" style="font-size: 10px; letter-spacing: 2px; margin-bottom: 15px; text-align: center; opacity: 0.5; font-weight: 900;">${sectionTitle}</p>`;
+
+            // Renderizar avance por sección basado en la data real
+            for (const [sec, total] of Object.entries(albumDataRef)) {
+                if (total === 0) continue; // No mostrar secciones vacías
+
+                // Aquí simulamos el conteo por sección filtrando el array 'des' si tuviéramos la categoría en el objeto desbloqueado. 
+                // Por ahora, para que sea visual, mostramos el total de la sección.
+                const html = `
+                    <div class="cat-item">
+                        <div class="cat-info">
+                            <span>${dictionary[lang][sec] || sec}</span>
+                            <span>${total} LÁMINAS</span>
+                        </div>
+                        <div class="progress-bg">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            }
+        }
+
+        window.onload = () => {
+            applyTheme();
+            applyLanguage();
+            updateStats();
+        };
+    </script>
+</body>
+</html>

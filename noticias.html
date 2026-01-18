@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RUGE EL ESTADIO - Noticias</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style id="dynamic-theme">
+        /* --- MOTOR DE FUENTES RUGE EL ESTADIO --- */
+        @font-face { font-family: 'Jersey'; src: url('assets/fonts/Jersey.ttf'); }
+        @font-face { font-family: 'Bangers'; src: url('assets/fonts/Bangers.ttf'); }
+        @font-face { font-family: 'Smooch'; src: url('assets/fonts/SmoochSans-Bold.ttf'); }
+        @font-face { font-family: 'Afacad'; src: url('assets/fonts/Afacad-Bold.ttf'); }
+        @font-face { font-family: 'Permanent Marker'; src: url('assets/fonts/PermanentMarker.ttf'); }
+        @font-face { font-family: 'Gloria'; src: url('assets/fonts/Gloria.ttf'); }
+        @font-face { font-family: 'Goldman'; src: url('assets/fonts/Goldman-Bold.ttf'); }
+        @font-face { font-family: 'Gruppo'; src: url('assets/fonts/Gruppo.ttf'); }
+        @font-face { font-family: 'Josefin Slab'; src: url('assets/fonts/JosefinSlab-Bold.ttf'); }
+        @font-face { font-family: 'Bahianita'; src: url('assets/fonts/Bahianita.ttf'); }
+        @font-face { font-family: 'Caveat'; src: url('assets/fonts/Caveat-Bold.ttf'); }
+        @font-face { font-family: 'Rubik Iso'; src: url('assets/fonts/RubikIso.ttf'); }
+        @font-face { font-family: 'Tagesschrift'; src: url('assets/fonts/Tagesschrift.ttf'); }
+
+        :root { 
+            --neon: #2ecc71; 
+            --border: rgba(46, 204, 113, 0.2); 
+            --glass: rgba(255, 255, 255, 0.05); 
+            --fuente-principal: 'Afacad', sans-serif;
+        }
+    </style>
+
+    <style>
+        body { 
+            margin: 0; padding: 0; 
+            font-family: var(--fuente-principal); 
+            background: #000; color: white; overflow-x: hidden; text-align: center; 
+        }
+        
+        button, input, .nav-btn, .news-title, .news-tag, h3, span {
+            font-family: var(--fuente-principal) !important;
+        }
+
+        .bg-blur { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1; background-size: cover; background-position: center; transition: 0.5s; background-attachment: fixed; }
+        .header { position: fixed; top: 0; width: 100%; height: 60px; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.95); border-bottom: 2px solid var(--neon); z-index: 2000; backdrop-filter: blur(10px); }
+        .back-btn { position: absolute; left: 10px; color: var(--neon); font-size: 24px; background: transparent; border: none; cursor: pointer; }
+        
+        .nav-scroll { position: fixed; top: 60px; width: 100%; z-index: 1900; display: flex; justify-content: flex-start; overflow-x: auto; padding: 12px; gap: 8px; background: rgba(0,0,0,0.85); border-bottom: 1px solid var(--border); white-space: nowrap; }
+        .nav-scroll::-webkit-scrollbar { display: none; }
+
+        .nav-btn { padding: 8px 18px; background: var(--glass); border: 1px solid var(--border); border-radius: 20px; font-size: 10px; color: #fff; text-transform: uppercase; font-weight: 900; cursor: pointer; transition: 0.3s; }
+        .nav-btn.active { background: var(--neon); color: #000; border-color: var(--neon); box-shadow: 0 0 10px var(--neon); }
+        .container { padding: 140px 15px 40px; display: flex; flex-direction: column; align-items: center; gap: 20px; min-height: 100vh; }
+
+        /* --- ESTILOS LIVE MEJORADOS --- */
+        .live-card { width: 100%; max-width: 400px; background: rgba(0,0,0,0.6); border: 1px solid var(--border); border-radius: 15px; padding: 20px; margin-bottom: 15px; position: relative; overflow: hidden; transition: 0.3s; order: 2; }
+        .live-card.active-match { border-color: var(--neon); box-shadow: 0 0 15px var(--border); order: 1; } /* Los activos suben */
+        .live-badge { position: absolute; top: 10px; right: 10px; background: #ff0000; color: white; font-size: 8px; padding: 2px 8px; border-radius: 10px; font-weight: 900; animation: blink 1s infinite; }
+        .live-match-info { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: 10px 0; }
+        .team-name { font-size: 13px; font-weight: 900; flex: 1; text-transform: uppercase; color: #fff; }
+        .match-score { font-size: 24px; font-weight: 900; color: var(--neon); letter-spacing: 5px; min-width: 80px; }
+        .match-timer { font-size: 11px; color: var(--neon); font-weight: bold; opacity: 0.8; }
+        .match-league { font-size: 9px; color: #888; text-transform: uppercase; display: block; }
+
+        /* Botón de Conexión / Respaldo */
+        .api-connect-btn { width: 100%; max-width: 400px; padding: 15px; background: rgba(0,0,0,0.6); border: 2px solid var(--neon); border-radius: 12px; color: var(--neon); font-weight: 900; font-size: 11px; letter-spacing: 2px; cursor: pointer; margin-bottom: 10px; position: relative; }
+        .api-status-dot { height: 8px; width: 8px; background: #555; border-radius: 50%; display: inline-block; margin-right: 10px; }
+        .dot-active { background: var(--neon) !important; animation: blink 1s infinite; }
+        .mode-label { position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); font-size: 8px; color: #888; letter-spacing: 1px; }
+
+        .news-card { background: var(--glass); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; width: 100%; max-width: 400px; animation: fadeIn 0.5s ease; cursor: pointer; margin-bottom: 15px; display: flex; flex-direction: column; backdrop-filter: blur(5px); }
+        .img-container { width: 100%; height: 180px; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--border); overflow: hidden; }
+        .news-img { width: 100%; height: 100%; object-fit: cover; }
+        .news-img.backup-mode { width: 60%; height: 60%; object-fit: contain; filter: drop-shadow(0 0 5px var(--neon)); }
+        .news-info { padding: 20px; text-align: center; }
+        .news-tag { color: var(--neon); font-size: 10px; font-weight: bold; text-transform: uppercase; }
+        .news-title { font-size: 14px; font-weight: bold; margin-top: 8px; line-height: 1.4; color: #fff; }
+
+        @keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div class="bg-blur" id="bg-main"></div>
+    <header class="header">
+        <button class="back-btn" onclick="window.history.back();"><i class="fa-solid fa-chevron-left"></i></button>
+        <h3 style="margin:0; letter-spacing: 5px; font-size: 14px; font-weight: 900;" data-key="header_title">NOTICIAS RUGE</h3>
+    </header>
+
+    <nav class="nav-scroll">
+        <div class="nav-btn active" id="btn-min" onclick="cambiarSeccion('minuto')" data-key="btn_min">MARCADORES</div>
+        <div class="nav-btn" id="btn-col" onclick="cambiarSeccion('colombia')" data-key="btn_col">COLOMBIA</div>
+        <div class="nav-btn" id="btn-lat" onclick="cambiarSeccion('latam')" data-key="btn_lat">LATAM</div>
+        <div class="nav-btn" id="btn-eur" onclick="cambiarSeccion('europa')" data-key="btn_eur">EUROPA</div>
+    </nav>
+
+    <div class="container">
+        <button class="api-connect-btn" id="btn-sync-main" onclick="alternarModoConexion()">
+            <span class="api-status-dot" id="dot"></span>
+            <span id="api-text" data-key="api_force">SINCRO AUTOMÁTICA</span>
+            <span class="mode-label" id="mode-label">CLICK PARA CAMBIAR A RESPALDO</span>
+        </button>
+        <div id="news-grid" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
+    </div>
+
+    <script>
+        const API_KEY_YT = 'AIzaSyDlQ8dCzN8PLZxYi5hS36Vw3zqOTEnmmQQ';
+        const API_KEY_ALLSPORTS = '70183699b2377c17cfc4aa22c9b836e735c656cb36aa29e18827edd463bbdbe8';
+
+        let seccionActual = 'minuto';
+        let modoRespaldo = false;
+        let socketConnection = null;
+        let userLang = localStorage.getItem('userLang') || 'es';
+
+        const dictionary = {
+            es: {
+                header_title: "NOTICIAS RUGE",
+                btn_min: "MARCADORES",
+                btn_col: "COLOMBIA",
+                btn_lat: "LATAM",
+                btn_eur: "EUROPA",
+                api_force: "SINCRO AUTOMÁTICA",
+                api_backup: "MODO RESPALDO ACTIVO",
+                api_live_only: "SATÉLITE EN VIVO OBLIGATORIO",
+                api_sync: "BUSCANDO SEÑAL...",
+                api_ok: "SINCRO EXITOSA",
+                tag_backup: "CANAL OFICIAL",
+                access_to: "VER CONTENIDO DE:",
+                live_waiting: "CARGANDO CARTELERA DEL DÍA..."
+            },
+            en: {
+                header_title: "ROAR NEWS",
+                btn_min: "markers",
+                btn_col: "COLOMBIA",
+                btn_lat: "LATAM",
+                btn_eur: "EUROPE",
+                api_force: "AUTO SYNC",
+                api_backup: "BACKUP MODE ACTIVE",
+                api_live_only: "LIVE SATELLITE REQUIRED",
+                api_sync: "SCANNING SIGNAL...",
+                api_ok: "SYNC SUCCESSFUL",
+                tag_backup: "OFFICIAL CHANNEL",
+                access_to: "GO TO:",
+                live_waiting: "LOADING MATCH DAY..."
+            }
+        };
+
+        const SECCIONES = {
+            colombia: [
+                { nombre: "NOTICIAS RCN", id: "UCOqPtiqIO3XobOq3txjwdZA", url: "https://www.youtube.com/@DeportesRCN/videos", logo: "assets/imagen/logos/rcn.png" },
+                { nombre: "WIN SPORTS", id: "UCfO-YJmO6lS6m6H9-24pX7w", url: "https://www.youtube.com/@WinSportsTV/videos", logo: "assets/imagen/logos/win.jpg" }
+            ],
+            latam: [
+                { nombre: "ESPN FANS", id: "UCXF_1mSAn_L89D-iC_oN6-w", url: "https://www.youtube.com/@espnfans/videos", logo: "assets/imagen/logos/espn.png" },
+                { nombre: "CÁBALA FUTBOLERA", id: "UC35H6o0I2z6T5qYh5p7_q_g", url: "https://www.youtube.com/@cabalafutbolera/videos", logo: "assets/imagen/logos/Cf.jpg" }
+            ],
+            europa: [
+                { nombre: "DIARIO AS", id: "UCvG8I_w9fJ0vF_mB08j-IBA", url: "https://www.youtube.com/@diarioas/videos", logo: "assets/imagen/logos/as.png" },
+                { nombre: "MARCA", id: "UCp_8idv_u2mBv0V_lH3_e-A", url: "https://www.youtube.com/@marca/videos", logo: "assets/imagen/logos/marca.png" }
+            ]
+        };
+
+        function alternarModoConexion() {
+            if(seccionActual === 'minuto') return; // Bloqueado en Minuto a Minuto
+
+            modoRespaldo = !modoRespaldo;
+            actualizarInterfazSync();
+            activarYConsultar();
+        }
+
+        function actualizarInterfazSync() {
+            const btnText = document.getElementById('api-text');
+            const label = document.getElementById('mode-label');
+            const dot = document.getElementById('dot');
+            const btn = document.getElementById('btn-sync-main');
+
+            if(seccionActual === 'minuto') {
+                btnText.innerText = "SATÉLITE RUGE ACTIVO";
+                label.innerText = dictionary[userLang].api_live_only;
+                dot.classList.add('dot-active');
+                btn.style.opacity = "0.7";
+                btn.style.cursor = "default";
+                return;
+            }
+
+            btn.style.opacity = "1";
+            btn.style.cursor = "pointer";
+            if(modoRespaldo) {
+                btnText.innerText = dictionary[userLang].api_backup;
+                label.innerText = "CLICK PARA VOLVER A AUTOMÁTICO";
+                dot.classList.remove('dot-active');
+            } else {
+                btnText.innerText = dictionary[userLang].api_force;
+                label.innerText = "CLICK PARA CAMBIAR A RESPALDO";
+            }
+        }
+
+        async function cargarCarteleraLive() {
+            const grid = document.getElementById('news-grid');
+            grid.innerHTML = `<div style="padding:20px; font-size:11px; opacity:0.6;">${dictionary[userLang].live_waiting}</div>`;
+            
+            try {
+                const hoy = new Date().toISOString().split('T')[0];
+                const resp = await fetch(`https://apiv2.allsportsapi.com/football/?met=Fixtures&APIkey=${API_KEY_ALLSPORTS}&from=${hoy}&to=${hoy}`);
+                const data = await resp.json();
+
+                if(data.result) {
+                    grid.innerHTML = "";
+                    // Priorizamos: partidos en vivo van primero
+                    data.result.sort((a, b) => b.event_live - a.event_live);
+
+                    data.result.forEach(m => {
+                        grid.innerHTML += `
+                            <div class="live-card ${m.event_live === '1' ? 'active-match' : ''}" id="match-${m.event_key}">
+                                ${m.event_live === '1' ? '<div class="live-badge">LIVE</div>' : ''}
+                                <span class="match-league">${m.league_name}</span>
+                                <div class="live-match-info">
+                                    <span class="team-name">${m.event_home_team}</span>
+                                    <span class="match-score" id="score-${m.event_key}">${m.event_final_result || '0 - 0'}</span>
+                                    <span class="team-name">${m.event_away_team}</span>
+                                </div>
+                                <div class="match-timer" id="time-${m.event_key}">
+                                    ${m.event_status === '' ? 'PROXIMAMENTE' : m.event_status + "'"}
+                                </div>
+                            </div>`;
+                    });
+
+                    if(socketConnection) socketConnection.close();
+                    socketConnection = new WebSocket(`wss://wss.allsportsapi.com/live_events?APIkey=${API_KEY_ALLSPORTS}`);
+                    
+                    socketConnection.onmessage = (e) => {
+                        const updates = JSON.parse(e.data);
+                        updates.forEach(upd => {
+                            const scoreEl = document.getElementById(`score-${upd.event_key}`);
+                            const card = document.getElementById(`match-${upd.event_key}`);
+                            if(scoreEl) scoreEl.innerText = upd.event_final_result;
+                            // Si un partido empieza a estar en vivo mientras el usuario mira, lo resaltamos
+                            if(card && upd.event_live === "1") card.classList.add('active-match');
+                        });
+                    };
+                }
+            } catch (e) { grid.innerHTML = "ERROR DE SEÑAL SATELITAL"; }
+        }
+
+        function cargarRespaldo() {
+            const grid = document.getElementById('news-grid');
+            let html = '';
+            SECCIONES[seccionActual].forEach(canal => {
+                html += `
+                    <div class="news-card" onclick="window.open('${canal.url}', '_blank')">
+                        <div class="img-container"><img src="${canal.logo}" class="news-img backup-mode"></div>
+                        <div class="news-info">
+                            <span class="news-tag">${dictionary[userLang].tag_backup}</span>
+                            <div class="news-title">${dictionary[userLang].access_to} ${canal.nombre}</div>
+                        </div>
+                    </div>`;
+            });
+            grid.innerHTML = html;
+        }
+
+        async function activarYConsultar() {
+            const grid = document.getElementById('news-grid');
+            const dot = document.getElementById('dot');
+            actualizarInterfazSync();
+            
+            if(socketConnection) { socketConnection.close(); socketConnection = null; }
+
+            if(seccionActual === 'minuto') {
+                await cargarCarteleraLive();
+                return;
+            }
+
+            if(modoRespaldo) {
+                cargarRespaldo();
+                return;
+            }
+
+            dot.classList.add('dot-active');
+            let htmlAPI = '';
+            try {
+                for (const canal of SECCIONES[seccionActual]) {
+                    const resp = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${canal.id}&maxResults=2&order=date&type=video&key=${API_KEY_YT}`);
+                    const data = await resp.json();
+                    if (data.items) {
+                        data.items.forEach(item => {
+                            htmlAPI += `
+                                <div class="news-card" onclick="window.open('https://www.youtube.com/watch?v=${item.id.videoId}', '_blank')">
+                                    <div class="img-container"><img src="${item.snippet.thumbnails.high.url}" class="news-img"></div>
+                                    <div class="news-info">
+                                        <span class="news-tag">${canal.nombre}</span>
+                                        <div class="news-title">${item.snippet.title}</div>
+                                    </div>
+                                </div>`;
+                        });
+                    }
+                }
+                grid.innerHTML = htmlAPI || "SIN NOVEDADES RECIENTES";
+            } catch (e) { cargarRespaldo(); }
+            dot.classList.remove('dot-active');
+        }
+
+        function cambiarSeccion(sec) {
+            seccionActual = sec;
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-' + sec.substring(0,3)).classList.add('active');
+            activarYConsultar();
+        }
+
+        function applyTheme() {
+            const color = localStorage.getItem('themeColor') || '#2ecc71';
+            const bg = localStorage.getItem('themeBg') || 'assets/imagen/fondos/fondo.jpg';
+            const font = localStorage.getItem('fuentePersonalizada') || 'Afacad';
+            document.documentElement.style.setProperty('--neon', color);
+            document.documentElement.style.setProperty('--border', color + '33');
+            document.documentElement.style.setProperty('--fuente-principal', `'${font}', sans-serif`);
+            const bgMain = document.getElementById('bg-main');
+            if(bgMain) bgMain.style.backgroundImage = `url('${bg}')`;
+        }
+
+        function applyLanguage() {
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (dictionary[userLang][key]) el.innerText = dictionary[userLang][key];
+            });
+        }
+
+        window.onload = () => { applyTheme(); applyLanguage(); activarYConsultar(); };
+    </script>
+</body>
+</html>

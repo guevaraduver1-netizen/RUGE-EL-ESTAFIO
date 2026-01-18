@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Perfil - RUGE EL ESTADIO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style id="dynamic-theme">
+        /* --- MOTOR DE FUENTES LOCALES RUGE EL ESTADIO --- */
+        @font-face { font-family: 'Jersey'; src: url('assets/fonts/Jersey.ttf'); }
+        @font-face { font-family: 'Bangers'; src: url('assets/fonts/Bangers.ttf'); }
+        @font-face { font-family: 'Smooch'; src: url('assets/fonts/SmoochSans-Bold.ttf'); }
+        @font-face { font-family: 'Afacad'; src: url('assets/fonts/Afacad-Bold.ttf'); }
+        @font-face { font-family: 'Permanent Marker'; src: url('assets/fonts/PermanentMarker.ttf'); }
+        @font-face { font-family: 'Gloria'; src: url('assets/fonts/Gloria.ttf'); }
+        @font-face { font-family: 'Goldman'; src: url('assets/fonts/Goldman-Bold.ttf'); }
+        @font-face { font-family: 'Gruppo'; src: url('assets/fonts/Gruppo.ttf'); }
+        @font-face { font-family: 'Josefin Slab'; src: url('assets/fonts/JosefinSlab-Bold.ttf'); }
+        @font-face { font-family: 'Bahianita'; src: url('assets/fonts/Bahianita.ttf'); }
+        @font-face { font-family: 'Caveat'; src: url('assets/fonts/Caveat-Bold.ttf'); }
+        @font-face { font-family: 'Rubik Iso'; src: url('assets/fonts/RubikIso.ttf'); }
+        @font-face { font-family: 'Tagesschrift'; src: url('assets/fonts/Tagesschrift.ttf'); }
+
+        :root { 
+            --neon: #2ecc71; 
+            --border: rgba(46, 204, 113, 0.2); 
+            --glass: rgba(255, 255, 255, 0.05); 
+            --fuente-principal: 'Afacad', sans-serif;
+        }
+    </style>
+
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+        
+        body { 
+            margin: 0; 
+            font-family: var(--fuente-principal); 
+            background: #000; color: white; min-height: 100vh; overflow-x: hidden; 
+        }
+
+        /* Aplicación global de fuente personalizada */
+        .header-fixed h3, .input-group label, .input-group input, .btn-save, .btn-logout, #toast-perfil {
+            font-family: var(--fuente-principal) !important;
+        }
+        
+        .bg-blur { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1; background-size: cover; background-position: center; transition: 0.5s; background-attachment: fixed; }
+        
+        .header-fixed { height: 65px; background: rgba(0, 0, 0, 0.95); border-bottom: 2px solid var(--neon); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; position: sticky; top: 0; z-index: 2000; backdrop-filter: blur(10px); }
+        .btn-home { color: var(--neon); font-size: 22px; text-decoration: none; }
+        
+        .container { padding: 40px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; min-height: calc(100vh - 65px); }
+        
+        .profile-pic-container { position: relative; width: 150px; height: 150px; margin: 10px auto 25px; animation: fadeIn 0.5s ease; }
+        #profile-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid var(--neon); box-shadow: 0 0 20px var(--border); background: #111; }
+        
+        .edit-badge { position: absolute; bottom: 5px; right: 5px; background: var(--neon); color: black; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; border: 3px solid #000; cursor: pointer; }
+        
+        .info-card { background: var(--glass); border: 1px solid var(--border); border-radius: 25px; padding: 25px 20px; width: 100%; max-width: 400px; backdrop-filter: blur(15px); animation: fadeIn 0.6s ease; }
+        
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; font-size: 10px; color: var(--neon); letter-spacing: 2px; margin-bottom: 8px; font-weight: 900; text-transform: uppercase; }
+        .input-group input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 12px; padding: 14px; color: white; font-size: 15px; outline: none; transition: 0.3s; }
+        .input-group input:focus { border-color: var(--neon); background: rgba(255,255,255,0.1); }
+
+        .btn-save { background: var(--neon); color: black; border: none; padding: 16px; border-radius: 15px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; width: 100%; margin-top: 5px; transition: 0.3s; }
+        .btn-save:active { transform: scale(0.98); opacity: 0.8; }
+        
+        .btn-logout { background: transparent; color: #ff4757; border: 1px solid #ff4757; padding: 12px; border-radius: 15px; font-weight: 800; text-transform: uppercase; width: 100%; margin-top: 15px; font-size: 12px; cursor: pointer; }
+
+        #file-input { display: none; }
+        
+        #toast-perfil { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: var(--neon); color: black; padding: 12px 25px; border-radius: 50px; font-size: 12px; font-weight: 800; transition: 0.5s; z-index: 10000; box-shadow: 0 0 15px var(--border); text-transform: uppercase; }
+        #toast-perfil.show { bottom: 30px; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div class="bg-blur" id="bg-main"></div>
+    <div id="toast-perfil" data-key="toast_saved">¡CAMBIOS GUARDADOS!</div>
+
+    <header class="header-fixed">
+        <a href="index.html" class="btn-home"><i class="fa-solid fa-house"></i></a>
+        <h3 style="letter-spacing: 4px; font-size: 15px; font-weight: 900;" data-key="header_profile">MI PERFIL</h3>
+        <div style="width:45px"></div>
+    </header>
+
+    <main class="container">
+        <div class="profile-pic-container">
+            <img id="profile-img" src="" alt="Perfil">
+            <label for="file-input" class="edit-badge"><i class="fa-solid fa-camera"></i></label>
+            <input type="file" id="file-input" accept="image/*">
+        </div>
+
+        <div class="info-card">
+            <div class="input-group">
+                <label data-key="label_name">NOMBRE DE HINCHA</label>
+                <input type="text" id="user-name">
+            </div>
+            <div class="input-group">
+                <label data-key="label_email">CORREO ELECTRÓNICO</label>
+                <input type="email" id="user-email" readonly style="opacity: 0.5;">
+            </div>
+            <button class="btn-save" onclick="saveAll()" data-key="btn_save">GUARDAR CAMBIOS</button>
+            <button class="btn-logout" onclick="logout()" data-key="btn_logout">CERRAR SESIÓN</button>
+        </div>
+    </main>
+
+    <canvas id="compressor-canvas" style="display:none;"></canvas>
+
+    <script>
+        const dictionary = {
+            es: {
+                header_profile: "MI PERFIL",
+                label_name: "NOMBRE DE HINCHA",
+                label_email: "CORREO ELECTRÓNICO",
+                btn_save: "GUARDAR CAMBIOS",
+                btn_logout: "CERRAR SESIÓN",
+                toast_saved: "¡CAMBIOS GUARDADOS!",
+                alert_name: "El nombre es obligatorio"
+            },
+            en: {
+                header_profile: "MY PROFILE",
+                label_name: "FAN NAME",
+                label_email: "EMAIL ADDRESS",
+                btn_save: "SAVE CHANGES",
+                btn_logout: "LOG OUT",
+                toast_saved: "CHANGES SAVED!",
+                alert_name: "Name is required"
+            }
+        };
+
+        let userLang = localStorage.getItem('userLang') || 'es';
+
+        function applyLanguage() {
+            userLang = localStorage.getItem('userLang') || 'es';
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (dictionary[userLang][key]) el.innerText = dictionary[userLang][key];
+            });
+        }
+
+        function applyTheme() {
+            const color = localStorage.getItem('themeColor') || '#2ecc71';
+            const bg = localStorage.getItem('themeBg') || 'assets/imagen/fondos/fondo.jpg';
+            const dark = parseFloat(localStorage.getItem('themeDark')) || 0.0;
+            const blurValue = localStorage.getItem('themeBlurValue') || '20';
+            const font = localStorage.getItem('fuentePersonalizada') || 'Afacad';
+            
+            document.documentElement.style.setProperty('--neon', color);
+            document.documentElement.style.setProperty('--border', color + '33');
+            document.documentElement.style.setProperty('--fuente-principal', `'${font}', sans-serif`);
+
+            const bgMain = document.getElementById('bg-main');
+            if(bgMain) {
+                bgMain.style.backgroundImage = `url('${bg}')`;
+                bgMain.style.filter = `brightness(${1.1 - dark}) blur(${blurValue}px)`;
+            }
+        }
+
+        window.onload = () => {
+            const sesion = JSON.parse(localStorage.getItem('sesion_activa'));
+            if (!sesion) { window.location.href = "index.html"; return; }
+
+            document.getElementById('user-name').value = sesion.nombre || "";
+            document.getElementById('user-email').value = sesion.email || "";
+            
+            // Prioridad a la foto guardada en el email específico
+            const fotoGuardada = localStorage.getItem('userPhoto_' + sesion.email);
+            document.getElementById('profile-img').src = fotoGuardada || `https://ui-avatars.com/api/?name=${sesion.nombre}&background=${localStorage.getItem('themeColor')?.replace('#','') || '2ecc71'}&color=000`;
+
+            applyTheme();
+            applyLanguage();
+        };
+
+        document.getElementById('file-input').onchange = function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.getElementById('compressor-canvas');
+                        const ctx = canvas.getContext('2d');
+                        let width = img.width;
+                        let height = img.height;
+                        if (width > height) {
+                            if (width > 400) { height *= 400 / width; width = 400; }
+                        } else {
+                            if (height > 400) { width *= 400 / height; height = 400; }
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+                        const compressedData = canvas.toDataURL('image/jpeg', 0.7);
+                        document.getElementById('profile-img').src = compressedData;
+                        
+                        // Guardado preventivo al cambiar
+                        const user = JSON.parse(localStorage.getItem('sesion_activa'));
+                        if(user) localStorage.setItem('userPhoto_' + user.email, compressedData);
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        function saveAll() {
+            const user = JSON.parse(localStorage.getItem('sesion_activa'));
+            if(!user) return;
+            
+            const nuevoNombre = document.getElementById('user-name').value;
+            const nuevaFoto = document.getElementById('profile-img').src;
+
+            if(!nuevoNombre.trim()) return alert(dictionary[userLang].alert_name);
+
+            // 1. Guardar Foto vinculada al email
+            localStorage.setItem('userPhoto_' + user.email, nuevaFoto);
+            
+            // 2. Actualizar Sesión Activa
+            user.nombre = nuevoNombre;
+            localStorage.setItem('sesion_activa', JSON.stringify(user));
+
+            // 3. Actualizar en Base de Datos de Usuarios Registrados
+            let db = JSON.parse(localStorage.getItem('usuarios_registrados')) || [];
+            db = db.map(u => u.email === user.email ? { ...u, nombre: nuevoNombre } : u);
+            localStorage.setItem('usuarios_registrados', JSON.stringify(db));
+
+            const toast = document.getElementById('toast-perfil');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        function logout() { 
+            localStorage.removeItem('sesion_activa'); 
+            window.location.href = "index.html"; 
+        }
+    </script>
+</body>
+</html>

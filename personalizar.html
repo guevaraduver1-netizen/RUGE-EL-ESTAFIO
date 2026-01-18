@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RUGE EL ESTADIO - Personalizar</title>
+    <link rel="stylesheet" href="css/all.min.css">
+    <style>
+        /* --- DECLARACIÓN DE TODAS LAS FUENTES --- */
+        @font-face { font-family: 'Jersey'; src: url('assets/fonts/Jersey.ttf'); }
+        @font-face { font-family: 'Bangers'; src: url('assets/fonts/Bangers.ttf'); }
+        @font-face { font-family: 'Smooch'; src: url('assets/fonts/SmoochSans-Bold.ttf'); }
+        @font-face { font-family: 'Afacad'; src: url('assets/fonts/Afacad-Bold.ttf'); }
+        @font-face { font-family: 'Permanent Marker'; src: url('assets/fonts/PermanentMarker.ttf'); }
+        @font-face { font-family: 'Gloria'; src: url('assets/fonts/Gloria.ttf'); }
+        @font-face { font-family: 'Goldman'; src: url('assets/fonts/Goldman-Bold.ttf'); }
+        @font-face { font-family: 'Gruppo'; src: url('assets/fonts/Gruppo.ttf'); }
+        @font-face { font-family: 'Josefin Slab'; src: url('assets/fonts/JosefinSlab-Bold.ttf'); }
+        @font-face { font-family: 'Bahianita'; src: url('assets/fonts/Bahianita.ttf'); }
+        @font-face { font-family: 'Caveat'; src: url('assets/fonts/Caveat-Bold.ttf'); }
+        @font-face { font-family: 'Rubik Iso'; src: url('assets/fonts/RubikIso.ttf'); }
+        @font-face { font-family: 'Tagesschrift'; src: url('assets/fonts/Tagesschrift.ttf'); }
+
+        :root { 
+            --neon: #2ecc71; 
+            --border: rgba(255, 255, 255, 0.1); 
+            --fuente-principal: 'Afacad', sans-serif;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        body { 
+            margin: 0; padding: 0; font-family: var(--fuente-principal); 
+            background: #000; color: white; min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        button, input, .control-label, .section-title {
+            font-family: var(--fuente-principal) !important;
+        }
+
+        .bg-blur { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background-size: cover; background-position: center center; 
+            z-index: -1; 
+        }
+       .header { 
+            position: fixed; top: 0; width: 100%; padding: 18px 0; 
+            text-align: center; background: rgba(0, 0, 0, 0.9); 
+            border-bottom: 2px solid var(--neon); z-index: 1000;
+        }
+
+        .container { padding: 90px 20px 40px; }
+
+        .section-title { 
+            font-size: 11px; font-weight: 900; color: var(--neon); 
+            letter-spacing: 2px; margin-bottom: 15px; text-transform: uppercase;
+            text-shadow: 0 0 5px var(--neon);
+            margin-top: 25px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        /* --- CONTENEDOR TICKER CON MÁSCARA --- */
+        .font-ticker-wrapper {
+            position: relative;
+            margin: 0 -20px; /* Extender a los bordes */
+            padding: 0 20px;
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
+
+        .font-ticker {
+            display: flex; overflow-x: auto; gap: 12px;
+            padding: 15px 5px 25px; scrollbar-width: none;
+            animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .font-ticker::-webkit-scrollbar { display: none; }
+
+        .font-card {
+            min-width: 140px; height: 80px; 
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px); /* DESENFOQUE AGREGADO */
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border); border-radius: 15px;
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; cursor: pointer; transition: all 0.3s;
+            position: relative; overflow: hidden;
+        }
+        .font-card span { font-size: 18px; margin-bottom: 5px; pointer-events: none; }
+        .font-card label { font-size: 9px; opacity: 0.6; text-transform: uppercase; letter-spacing: 1px; font-weight: 900; cursor: pointer; }
+
+        .font-card.active {
+            border-color: var(--neon); background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 0 20px rgba(0,0,0,0.5); transform: translateY(-5px);
+        }
+        .font-card.active::after {
+            content: ''; position: absolute; bottom: 0; width: 100%; height: 3px;
+            background: var(--neon); box-shadow: 0 0 10px var(--neon);
+        }
+
+        .grid-colors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 25px; }
+        .color-dot { 
+            height: 45px; border-radius: 12px; border: 2px solid transparent; 
+            display: flex; align-items: center; justify-content: center;
+            font-size: 9px; font-weight: 900; color: rgba(0,0,0,0.6);
+            transition: 0.3s; cursor: pointer;
+        }
+        .color-dot.active { border-color: white; transform: scale(1.05); box-shadow: 0 0 15px var(--neon); color: black; }
+
+        .grid-bgs { 
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; 
+            margin-bottom: 25px; max-height: 250px; overflow-y: auto; padding: 5px;
+        }
+        .bg-thumb { 
+            height: 70px; border-radius: 10px; background-size: cover; 
+            background-position: center; border: 2px solid transparent; 
+            cursor: pointer; transition: 0.2s;
+        }
+        .bg-thumb.active { border-color: var(--neon); transform: scale(1.05); box-shadow: 0 0 12px var(--neon); }
+
+        .panel-ajustes {
+            background: rgba(0,0,0,0.8); border: 1px solid var(--border);
+            border-radius: 20px; padding: 20px; backdrop-filter: blur(15px);
+            border-bottom: 3px solid var(--neon); margin-top: 20px;
+        }
+
+        .control-item { margin-bottom: 20px; }
+        .control-label { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 8px; font-weight: bold; }
+        
+        input[type="range"] { width: 100%; accent-color: var(--neon); height: 6px; }
+
+        .btn-guardar {
+            width: 100%; background: var(--neon); color: black; border: none;
+            padding: 18px; border-radius: 15px; font-weight: 900; letter-spacing: 2px;
+            cursor: pointer; transition: 0.3s; margin-top: 10px; text-transform: uppercase;
+        }
+
+        .grid-bgs::-webkit-scrollbar { width: 4px; }
+        .grid-bgs::-webkit-scrollbar-thumb { background: var(--neon); border-radius: 10px; }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+    </style>
+</head>
+<body>
+    <div class="bg-blur" id="preview-bg"></div>
+
+    <header class="header">
+        <a href="index.html" style="position:absolute; left:20px; color:var(--neon);"><i class="fa-solid fa-arrow-left"></i></a>
+        <h3 style="margin:0; letter-spacing: 3px; font-size: 14px; font-weight: 900;">RUGE EL ESTADIO</h3>
+    </header>
+
+    <div class="container">
+        <div class="section-title" data-key="sec_lang">Idioma del Estadio</div>
+        <div class="grid-lang" style="display: flex; gap: 10px; margin-bottom: 25px;">
+            <button class="lang-btn" id="btn-es" style="flex: 1; padding: 12px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: white; cursor: pointer; font-weight: 800; font-size: 11px; text-transform: uppercase;" onclick="setLang('es')">Español</button>
+            <button class="lang-btn" id="btn-en" style="flex: 1; padding: 12px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: white; cursor: pointer; font-weight: 800; font-size: 11px; text-transform: uppercase;" onclick="setLang('en')">English</button>
+        </div>
+
+        <div class="section-title" data-key="sec_font">Tipografía de la Hinchada</div>
+        <div class="font-ticker-wrapper">
+            <div class="font-ticker" id="fontTicker">
+                <div class="font-card" onclick="setMainFont('Afacad', this)" data-font="Afacad">
+                    <span style="font-family: 'Afacad'">Estilo</span>
+                    <label>Afacad</label>
+                </div>
+                <div class="font-card" onclick="setMainFont('Jersey', this)" data-font="Jersey">
+                    <span style="font-family: 'Jersey'">GOLAZO</span>
+                    <label>Jersey</label>
+                </div>
+                <div class="font-card" onclick="setMainFont('Bangers', this)" data-font="Bangers">
+                    <span style="font-family: 'Bangers'">ESTADIO</span>
+                    <label>Bangers</label>
+                </div>
+                <div class="font-card" onclick="setMainFont('Permanent Marker', this)" data-font="Permanent Marker">
+                    <span style="font-family: 'Permanent Marker'">RUGE</span>
+                    <label>Urban</label>
+                </div>
+                <div class="font-card" onclick="setMainFont('Goldman', this)" data-font="Goldman">
+                    <span style="font-family: 'Goldman'">MODERNO</span>
+                    <label>Goldman</label>
+                </div>
+                <div class="font-card" onclick="setMainFont('Smooch', this)" data-font="Smooch">
+                    <span style="font-family: 'Smooch'">Hincha</span>
+                    <label>Smooch</label>
+                </div>
+                <div class="font-card" onclick="setMainFont('Gloria', this)" data-font="Gloria">
+                    <span style="font-family: 'Gloria'">Gloria</span>
+                    <label>Gloria</label>
+                </div>
+                <div class="font-card" onclick="setMainFont('Rubik Iso', this)" data-font="Rubik Iso">
+                    <span style="font-family: 'Rubik Iso'">ISO</span>
+                    <label>Rubik</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title" data-key="sec_color">Color Neón</div>
+        <div class="grid-colors" id="colorContainer">
+            <div class="color-dot" data-color="#2ecc71" data-key="c_green" style="background: #00ff6a;" onclick="setNeon('#00ff6a', this)">VERDE</div>
+            <div class="color-dot" data-color="#3498db" data-key="c_blue" style="background: #0099ff;" onclick="setNeon('#0099ff', this)">AZUL</div>
+            <div class="color-dot" data-color="#f0faff" data-key="c_white" style="background: #ffffff;" onclick="setNeon('#ffffff', this)">BLANCO</div>
+            <div class="color-dot" data-color="#f1c40f" data-key="c_copper" style="background: #907302;" onclick="setNeon('#907302', this)">COBRE</div>
+            <div class="color-dot" data-color="#e74c3c" data-key="c_red" style="background: #ff0000;" onclick="setNeon('#ff0000', this)">ROJO</div>
+            <div class="color-dot" data-color="#9b59b6" data-key="c_water" style="background: #00d9ff;" onclick="setNeon('#00d9ff', this)">AGUA</div>
+           <div class="color-dot" data-color="#f1c40f" data-key="c_purple" style="background: #4e0196;" onclick="setNeon('#4e0196', this)">MORADO</div>
+            <div class="color-dot" data-color="#e74c3c" data-key="c_dark_blue" style="background: #130189;" onclick="setNeon('#130189', this)">AZUL OSCURO</div>
+            <div class="color-dot" data-color="#9b59b6" data-key="c_fuchsia" style="background: #f200ff;" onclick="setNeon('#f200ff', this)">FUCSIA</div>
+   
+        </div>
+
+        <div class="section-title" data-key="sec_bg">Fondo del Estadio</div>
+        <div class="grid-bgs" id="bgContainer">
+            <div class="bg-thumb" data-img="assets/imagen/fondos/fondo.jpg" style="background-image: url('assets/imagen/fondos/fondo.jpg');" onclick="setBg('assets/imagen/fondos/fondo.jpg', this)"></div>
+            <div class="bg-thumb" data-img="assets/imagen/fondos/fondo1.jpg" style="background-image: url('assets/imagen/fondos/fondo1.jpg');" onclick="setBg('assets/imagen/fondos/fondo1.jpg', this)"></div>
+            <div class="bg-thumb" data-img="assets/imagen/fondos/fondo2.jpg" style="background-image: url('assets/imagen/fondos/fondo2.jpg');" onclick="setBg('assets/imagen/fondos/fondo2.jpg', this)"></div>
+            <div class="bg-thumb" data-img="assets/imagen/fondos/fondo3.jpg" style="background-image: url('assets/imagen/fondos/fondo3.jpg');" onclick="setBg('assets/imagen/fondos/fondo3.jpg', this)"></div>
+            <div class="bg-thumb" data-img="assets/imagen/fondos/fondo4.jpg" style="background-image: url('assets/imagen/fondos/fondo4.jpg');" onclick="setBg('assets/imagen/fondos/fondo4.jpg', this)"></div>
+            <div class="bg-thumb" data-img="assets/imagen/fondos/fondo5.jpg" style="background-image: url('assets/imagen/fondos/fondo5.jpg');" onclick="setBg('assets/imagen/fondos/fondo5.jpg', this)"></div>
+            <div class="bg-thumb" data-img="assets/imagen/fondos/fondo6.jpg" style="background-image: url('assets/imagen/fondos/fondo6.jpg');" onclick="setBg('assets/imagen/fondos/fondo6.jpg', this)"></div>
+            <div class="bg-thumb" data-img="assets/imagen/fondos/fondo7.jpg" style="background-image: url('assets/imagen/fondos/fondo7.jpg');" onclick="setBg('assets/imagen/fondos/fondo7.jpg', this)"></div>
+            <div class="bg-thumb" data-img="assets/imagen/fondos/fondo8.jpg" style="background-image: url('assets/imagen/fondos/fondo8.jpg');" onclick="setBg('assets/imagen/fondos/fondo8.jpg', this)"></div>
+            <div class="bg-thumb" data-img="assets/imagen/fondos/fondo9.jpg" style="background-image: url('assets/imagen/fondos/fondo9.jpg');" onclick="setBg('assets/imagen/fondos/fondo9.jpg', this)"></div>
+            <div class="bg-thumb" data-img="assets/imagen/fondos/fondo10.jpg" style="background-image: url('assets/imagen/fondos/fondo10.jpg');" onclick="setBg('assets/imagen/fondos/fondo10.jpg', this)"></div>
+            <div class="bg-thumb" data-img="assets/imagen/fondos/fondo11.jpg" style="background-image: url('assets/imagen/fondos/fondo11.jpg');" onclick="setBg('assets/imagen/fondos/fondo11.jpg', this)"></div>
+            <div class="bg-thumb" data-img="assets/imagen/fondos/fondo12.jpg" style="background-image: url('assets/imagen/fondos/fondo12.jpg');" onclick="setBg('assets/imagen/fondos/fondo12.jpg', this)"></div>
+            <div class="bg-thumb" data-img="assets/imagen/fondos/fondo13.jpg" style="background-image: url('assets/imagen/fondos/fondo13.jpg');" onclick="setBg('assets/imagen/fondos/fondo13.jpg', this)"></div>
+            <div class="bg-thumb" data-img="assets/imagen/fondos/fondo14.jpg" style="background-image: url('assets/imagen/fondos/fondo14.jpg');" onclick="setBg('assets/imagen/fondos/fondo14.jpg', this)"></div>
+        </div>
+
+        <div class="panel-ajustes">
+            <div class="control-item">
+                <div class="control-label"><span data-key="darkness">OSCURIDAD</span><span id="txtDark">50%</span></div>
+                <input type="range" id="rangeDark" min="0" max="1" step="0.05" oninput="updateLive()">
+            </div>
+            <div class="control-item">
+                <div class="control-label"><span data-key="blur">DESENFOQUE</span><span id="txtBlur">20px</span></div>
+                <input type="range" id="rangeBlur" min="0" max="40" step="1" oninput="updateLive()">
+            </div>
+            <button class="btn-guardar" onclick="processSave()" data-key="btn_save">GUARDAR ESTILO</button>
+        </div>
+    </div>
+
+    <script>
+        const dictionary = {
+            es: {
+                sec_lang: "Idioma del Estadio", sec_font: "Tipografía de la Hinchada",
+                sec_color: "Color Neón", sec_bg: "Fondo del Estadio",
+                darkness: "OSCURIDAD", blur: "DESENFOQUE",
+                btn_save: "GUARDAR ESTILO",
+                c_green: "VERDE", c_blue: "AZUL", c_white: "BLANCO", c_dark_blue: "AZUL OSCURO", c_fuchsia: "FUCSIA", c_copper: "COBRE", C_water: "AGUA",
+                c_red: "ROJO", c_purple: "MORADO"
+            },
+            en: {
+                sec_lang: "Stadium Language", sec_font: "Stadium Typography",
+                sec_color: "Neon Color", sec_bg: "Stadium Background",
+                darkness: "DARKNESS", blur: "BLUR",
+                btn_save: "SAVE STYLE",
+                c_green: "GREEN", c_blue: "BLUE", c_white: "WHITE",c_dark_blue: "DARK BLUE", c_fuchsia: "FUCHSIA", c_copper: "COPPER", C_water: "WATER",
+                c_red: "RED", c_purple: "PURPLE"
+            }
+        };
+
+        let activeColor = localStorage.getItem('themeColor') || '#2ecc71';
+        let activeBg = localStorage.getItem('themeBg') || 'assets/imagen/fondos/fondo.jpg';
+        let activeLang = localStorage.getItem('userLang') || 'es';
+        let activeFont = localStorage.getItem('fuentePersonalizada') || 'Afacad';
+
+        function setLang(lang) {
+            activeLang = lang;
+            localStorage.setItem('userLang', lang);
+            applyLanguage();
+        }
+
+        function applyLanguage() {
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (dictionary[activeLang][key]) el.innerText = dictionary[activeLang][key];
+            });
+            document.getElementById('btn-es').style.background = activeLang === 'es' ? 'var(--neon)' : 'rgba(255,255,255,0.05)';
+            document.getElementById('btn-es').style.color = activeLang === 'es' ? 'black' : 'white';
+            document.getElementById('btn-en').style.background = activeLang === 'en' ? 'var(--neon)' : 'rgba(255,255,255,0.05)';
+            document.getElementById('btn-en').style.color = activeLang === 'en' ? 'black' : 'white';
+        }
+
+        function setMainFont(fontName, el) {
+            activeFont = fontName;
+            document.documentElement.style.setProperty('--fuente-principal', `'${fontName}', sans-serif`);
+            document.querySelectorAll('.font-card').forEach(c => c.classList.remove('active'));
+            if(el) el.classList.add('active');
+        }
+
+        function setNeon(color, el) {
+            activeColor = color;
+            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+            if(el) el.classList.add('active');
+            document.documentElement.style.setProperty('--neon', color);
+        }
+
+        function setBg(img, el) {
+            activeBg = img;
+            document.querySelectorAll('.bg-thumb').forEach(t => t.classList.remove('active'));
+            if(el) el.classList.add('active');
+            document.getElementById('preview-bg').style.backgroundImage = `url('${img}')`;
+        }
+
+        function updateLive() {
+            const dark = document.getElementById('rangeDark').value;
+            const blur = document.getElementById('rangeBlur').value;
+            document.getElementById('txtDark').innerText = Math.round(dark * 100) + "%";
+            document.getElementById('txtBlur').innerText = blur + "px";
+            document.getElementById('preview-bg').style.filter = `brightness(${1.1 - dark}) blur(${blur}px)`;
+        }
+
+        function processSave() {
+            localStorage.setItem('themeColor', activeColor);
+            localStorage.setItem('themeBg', activeBg);
+            localStorage.setItem('themeDark', document.getElementById('rangeDark').value);
+            localStorage.setItem('themeBlurValue', document.getElementById('rangeBlur').value);
+            localStorage.setItem('userLang', activeLang);
+            localStorage.setItem('fuentePersonalizada', activeFont);
+            window.location.href = 'index.html';
+        }
+       window.onload = () => {
+            document.getElementById('rangeDark').value = localStorage.getItem('themeDark') || 0.5;
+            document.getElementById('rangeBlur').value = localStorage.getItem('themeBlurValue') || 20;
+
+            const activeFontCard = document.querySelector(`.font-card[data-font="${activeFont}"]`);
+            setMainFont(activeFont, activeFontCard);
+
+            const activeColorEl = document.querySelector(`.color-dot[data-color="${activeColor}"]`);
+            if(activeColorEl) activeColorEl.classList.add('active');
+
+            const activeBgEl = document.querySelector(`.bg-thumb[data-img="${activeBg}"]`);
+            if(activeBgEl) activeBgEl.classList.add('active');
+
+            applyLanguage();
+            setNeon(activeColor, activeColorEl);
+            setBg(activeBg, activeBgEl);
+            updateLive();
+        };
+    </script>
+</body>
+</html>

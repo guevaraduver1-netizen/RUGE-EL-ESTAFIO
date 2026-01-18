@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Soporte - RUGE EL ESTADIO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style id="dynamic-theme">
+        /* --- MOTOR DE FUENTES RUGE EL ESTADIO --- */
+        @font-face { font-family: 'Jersey'; src: url('assets/fonts/Jersey.ttf'); }
+        @font-face { font-family: 'Bangers'; src: url('assets/fonts/Bangers.ttf'); }
+        @font-face { font-family: 'Smooch'; src: url('assets/fonts/SmoochSans-Bold.ttf'); }
+        @font-face { font-family: 'Afacad'; src: url('assets/fonts/Afacad-Bold.ttf'); }
+        @font-face { font-family: 'Permanent Marker'; src: url('assets/fonts/PermanentMarker.ttf'); }
+        @font-face { font-family: 'Gloria'; src: url('assets/fonts/Gloria.ttf'); }
+        @font-face { font-family: 'Goldman'; src: url('assets/fonts/Goldman-Bold.ttf'); }
+        @font-face { font-family: 'Gruppo'; src: url('assets/fonts/Gruppo.ttf'); }
+        @font-face { font-family: 'Josefin Slab'; src: url('assets/fonts/JosefinSlab-Bold.ttf'); }
+        @font-face { font-family: 'Bahianita'; src: url('assets/fonts/Bahianita.ttf'); }
+        @font-face { font-family: 'Caveat'; src: url('assets/fonts/Caveat-Bold.ttf'); }
+        @font-face { font-family: 'Rubik Iso'; src: url('assets/fonts/RubikIso.ttf'); }
+        @font-face { font-family: 'Tagesschrift'; src: url('assets/fonts/Tagesschrift.ttf'); }
+
+        :root { 
+            --neon: #2ecc71; 
+            --border: rgba(46, 204, 113, 0.2); 
+            --glass: rgba(255, 255, 255, 0.05); 
+            --fuente-principal: 'Afacad', sans-serif;
+        }
+    </style>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--fuente-principal); background: #000; color: white; overflow-x: hidden; }
+        
+        /* Aplicar fuente a elementos clave */
+        h3, .support-title, .support-desc, .btn-action, p { font-family: var(--fuente-principal) !important; }
+
+        .bg-blur { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background-size: cover; background-position: center;
+            z-index: -1; transition: 0.5s;
+        }
+
+        .header { 
+            position: fixed; top: 0; width: 100%; height: 60px; 
+            background: rgba(0, 0, 0, 0.9); border-bottom: 2px solid var(--neon); 
+            z-index: 1000; backdrop-filter: blur(15px);
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .container { padding: 90px 20px 40px; text-align: center; max-width: 500px; margin: 0 auto; }
+
+        .support-card { 
+            background: var(--glass); border: 1px solid var(--border); 
+            border-radius: 15px; margin-bottom: 25px; 
+            backdrop-filter: blur(5px); padding: 30px 20px;
+            animation: slideUp 0.5s ease;
+        }
+
+        .support-icon { font-size: 45px; color: var(--neon); margin-bottom: 15px; text-shadow: 0 0 15px var(--neon); }
+        .support-title { font-size: 18px; font-weight: 900; margin: 10px 0; text-transform: uppercase; }
+        .support-desc { font-size: 14px; opacity: 0.7; margin-bottom: 20px; line-height: 1.5; }
+
+        .btn-action {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: var(--neon); color: #000; padding: 12px 25px;
+            border-radius: 50px; text-decoration: none; font-weight: 900;
+            font-size: 13px; box-shadow: 0 0 20px var(--border); transition: 0.3s;
+        }
+
+        .social-links { display: flex; justify-content: center; gap: 25px; margin-top: 30px; }
+        .social-links a { color: #fff; font-size: 22px; transition: 0.3s; }
+        .social-links a:hover { color: var(--neon); transform: translateY(-3px); }
+
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
+</head>
+<body>
+  
+    <div class="bg-blur" id="bg-main"></div>
+
+    <header class="header">
+        <a href="index.html" style="position:absolute; left:20px; color:var(--neon); font-size: 20px;"><i class="fa-solid fa-arrow-left"></i></a>
+        <h3 id="txt-header" style="letter-spacing: 5px; font-size: 14px; font-weight: 900;">SOPORTE</h3>
+    </header>
+
+    <div class="container">
+        
+        <div class="support-card">
+            <i class="fa-solid fa-headset support-icon"></i>
+            <div id="txt-help-title" class="support-title">¿Necesitas Ayuda?</div>
+            <div id="txt-help-desc" class="support-desc">Si tienes problemas con tus láminas, audios o cuenta, nuestro equipo atiende 24/7 vía WhatsApp.</div>
+            <a href="https://wa.me/573023928269" class="btn-action">
+                <i class="fa-brands fa-whatsapp"></i> <span id="txt-btn-wa">CONTACTAR AHORA</span>
+            </a>
+        </div>
+
+        <div class="support-card">
+            <i class="fa-solid fa-envelope-open-text support-icon"></i>
+            <div id="txt-mail-title" class="support-title">Consultas Oficiales</div>
+            <div id="txt-mail-desc" class="support-desc">Para reportes detallados o temas comerciales, escríbenos a nuestro correo oficial.</div>
+            <a href="mailto:soporterugeestadio@gmail.com" style="color:var(--neon); text-decoration:none; font-weight: 900; font-size: 14px; letter-spacing: 1px;">
+                soporte@rugeelestadio.com
+            </a>
+        </div>
+
+        <div class="social-links">
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://www.facebook.com/share/1NVf712o2P/"><i class="fa-brands fa-facebook"></i></a>
+            <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+        </div>
+
+        <p style="margin-top: 40px; font-size: 10px; opacity: 0.3; letter-spacing: 2px; font-weight: 900;">RUGE EL ESTADIO v2.5 - 2025</p>
+    </div>
+
+    <script>
+        const dictionary = {
+            es: {
+                header: "SOPORTE",
+                help_title: "¿NECESITAS AYUDA?",
+                help_desc: "Si tienes problemas con tus láminas, audios o cuenta, nuestro equipo atiende 24/7 vía WhatsApp.",
+                btn_wa: "CONTACTAR AHORA",
+                mail_title: "CONSULTAS OFICIALES",
+                mail_desc: "Para reportes detallados o temas comerciales, escríbenos a nuestro correo oficial."
+            },
+            en: {
+                header: "SUPPORT",
+                help_title: "NEED HELP?",
+                help_desc: "If you have issues with your stickers, audio, or account, our team is available 24/7 via WhatsApp.",
+                btn_wa: "CONTACT NOW",
+                mail_title: "OFFICIAL INQUIRIES",
+                mail_desc: "For detailed reports or business matters, write to our official email."
+            }
+        };
+
+        function applyTheme() {
+            // 1. Obtener preferencias
+            const lang = localStorage.getItem('userLang') || 'es';
+            const color = localStorage.getItem('themeColor') || '#2ecc71';
+            const bg = localStorage.getItem('themeBg') || 'assets/imagen/fondos/fondo.jpg';
+            const font = localStorage.getItem('fuentePersonalizada') || 'Afacad';
+            const dark = parseFloat(localStorage.getItem('themeDark')) || 0.0;
+            const blurValue = localStorage.getItem('themeBlurValue') || '20';
+
+            // 2. Aplicar Traducción
+            const d = dictionary[lang];
+            document.getElementById('txt-header').innerText = d.header;
+            document.getElementById('txt-help-title').innerText = d.help_title;
+            document.getElementById('txt-help-desc').innerText = d.help_desc;
+            document.getElementById('txt-btn-wa').innerText = d.btn_wa;
+            document.getElementById('txt-mail-title').innerText = d.mail_title;
+            document.getElementById('txt-mail-desc').innerText = d.mail_desc;
+
+            // 3. Aplicar Estilos Visuales y Fuente
+            document.documentElement.style.setProperty('--neon', color);
+            document.documentElement.style.setProperty('--border', color + '33');
+            document.documentElement.style.setProperty('--fuente-principal', `'${font}', sans-serif`);
+            
+            const bgMain = document.getElementById('bg-main');
+            if(bgMain) {
+                bgMain.style.backgroundImage = `url('${bg}')`;
+                bgMain.style.filter = `brightness(${1.1 - dark}) blur(${blurValue}px) `;
+            }
+        }
+
+        window.onload = applyTheme;
+    </script>
+</body>
+</html>

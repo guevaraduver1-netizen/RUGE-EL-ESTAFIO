@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Compartir - RUGE EL ESTADIO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style id="dynamic-theme">
+        /* --- MOTOR DE FUENTES LOCALES RUGE EL ESTADIO --- */
+        @font-face { font-family: 'Jersey'; src: url('assets/fonts/Jersey.ttf'); }
+        @font-face { font-family: 'Bangers'; src: url('assets/fonts/Bangers.ttf'); }
+        @font-face { font-family: 'Smooch'; src: url('assets/fonts/SmoochSans-Bold.ttf'); }
+        @font-face { font-family: 'Afacad'; src: url('assets/fonts/Afacad-Bold.ttf'); }
+        @font-face { font-family: 'Permanent Marker'; src: url('assets/fonts/PermanentMarker.ttf'); }
+        @font-face { font-family: 'Gloria'; src: url('assets/fonts/Gloria.ttf'); }
+        @font-face { font-family: 'Goldman'; src: url('assets/fonts/Goldman-Bold.ttf'); }
+        @font-face { font-family: 'Gruppo'; src: url('assets/fonts/Gruppo.ttf'); }
+        @font-face { font-family: 'Josefin Slab'; src: url('assets/fonts/JosefinSlab-Bold.ttf'); }
+        @font-face { font-family: 'Bahianita'; src: url('assets/fonts/Bahianita.ttf'); }
+        @font-face { font-family: 'Caveat'; src: url('assets/fonts/Caveat-Bold.ttf'); }
+        @font-face { font-family: 'Rubik Iso'; src: url('assets/fonts/RubikIso.ttf'); }
+        @font-face { font-family: 'Tagesschrift'; src: url('assets/fonts/Tagesschrift.ttf'); }
+
+        :root { 
+            --neon: #2ecc71; 
+            --glass-bg: rgba(0, 0, 0, 0.15); 
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --fuente-principal: 'Afacad', sans-serif;
+        }
+    </style>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body { 
+            margin: 0; padding: 0; 
+            font-family: var(--fuente-principal); 
+            background: #000;
+            color: white; display: flex; 
+            align-items: center; justify-content: center; height: 100vh; overflow: hidden;
+        }
+
+        /* Aplicación global de fuente personalizada */
+        .header h3, h2, p, .btn-native-share, .copy-link {
+            font-family: var(--fuente-principal) !important;
+        }
+
+        .bg-blur { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: -2; background-size: cover; background-position: center; 
+        }
+
+        .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.0); z-index: -1; }
+
+        .header { 
+            position: fixed; top: 0; width: 100%; padding: 20px; text-align: center; 
+            background: rgba(0, 0, 0, 0.8); border-bottom: 2px solid var(--neon); z-index: 1001;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h3 { font-weight: 900; letter-spacing: 2px; font-size: 14px; }
+
+        .btn-back-top { 
+            position: absolute; left: 15px; top: 18px; 
+            color: var(--neon); font-size: 22px; text-decoration: none; 
+        }
+
+        .share-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 30px 20px;
+            width: 85%; max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-top: 40px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        h2 { margin: 5px 0; color: var(--neon); text-shadow: 0 0 10px var(--neon); text-transform: uppercase; font-weight: 900; }
+        
+        #qrcode {
+            margin: 20px auto; padding: 10px; background: #fff;
+            border-radius: 12px; width: 160px; height: 160px;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .btn-native-share {
+            background: transparent; color: var(--neon);
+            border: 2px solid var(--neon); padding: 12px 25px;
+            border-radius: 50px; font-weight: 900; width: 90%;
+            margin: 10px 0 25px 0; cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            text-transform: uppercase; font-size: 12px;
+        }
+
+        .social-grid { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
+
+        .social-btn {
+            width: 52px; height: 52px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; text-decoration: none;
+            background: rgba(0, 0, 0, 0.5); border: 2px solid var(--neon);
+            color: var(--neon); transition: 0.3s;
+            opacity: 0;
+            transform: translateY(-50px);
+            animation: dropIcon 0.5s forwards;
+        }
+
+        .social-btn:nth-child(1) { animation-delay: 0.4s; }
+        .social-btn:nth-child(2) { animation-delay: 0.5s; }
+        .social-btn:nth-child(3) { animation-delay: 0.6s; }
+        .social-btn:nth-child(4) { animation-delay: 0.7s; }
+
+        .social-btn:active { transform: scale(0.9); background: var(--neon); color: #000; }
+        .copy-link { margin-top: 20px; font-size: 11px; color: var(--neon); cursor: pointer; opacity: 0.8; text-transform: uppercase; font-weight: 900; }
+
+        @keyframes dropIcon { to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div class="bg-blur" id="bg-main"></div>
+    <div class="overlay"></div>
+
+    <header class="header">
+        <a href="index.html" class="btn-back-top"><i class="fa-solid fa-arrow-left"></i></a>
+        <h3 data-key="share_title">COMPARTIR</h3>
+    </header>
+
+    <div class="share-container">
+        <h2 data-key="share_slogan">¡PASA LA BOLA!</h2>
+        <p style="font-size: 13px; opacity: 0.8;" data-key="share_desc">Usa el código o selecciona una red social.</p>
+
+        <div id="qrcode"></div>
+
+        <button class="btn-native-share" onclick="shareApp()">
+            <i class="fa-solid fa-up-right-from-square"></i> <span data-key="btn_share_app">COMPARTIR APP</span>
+        </button>
+
+        <div class="social-grid">
+            <a href="whatsapp://send?text=¡Mira esta App!" class="social-btn"><i class="fa-brands fa-whatsapp"></i></a>
+            <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" class="social-btn"><i class="fa-brands fa-tiktok"></i></a>
+        </div>
+
+        <div class="copy-link" onclick="copyToClipboard()" data-key="copy_link">Copiar enlace manual</div>
+    </div>
+
+    <script>
+        const dictionary = {
+            es: {
+                share_title: "COMPARTIR",
+                share_slogan: "¡PASA LA BOLA!",
+                share_desc: "Usa el código o selecciona una red social.",
+                btn_share_app: "COMPARTIR APP",
+                copy_link: "Copiar enlace manual",
+                link_copied: "¡Enlace copiado! 📋"
+            },
+            en: {
+                share_title: "SHARE",
+                share_slogan: "PASS THE BALL!",
+                share_desc: "Use the code or select a social network.",
+                btn_share_app: "SHARE APP",
+                copy_link: "Copy link manually",
+                link_copied: "Link copied! 📋"
+            }
+        };
+
+        function applyLanguage() {
+            const lang = localStorage.getItem('userLang') || 'es';
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (dictionary[lang][key]) el.innerText = dictionary[lang][key];
+            });
+        }
+
+        const appURL = window.location.origin + window.location.pathname; 
+        new QRCode(document.getElementById("qrcode"), {
+            text: appURL, width: 160, height: 160
+        });
+
+        async function shareApp() {
+            if (navigator.share) {
+                await navigator.share({ title: 'RUGE EL ESTADIO', url: appURL });
+            } else { copyToClipboard(); }
+        }
+
+        function copyToClipboard() {
+            const lang = localStorage.getItem('userLang') || 'es';
+            navigator.clipboard.writeText(appURL);
+            alert(dictionary[lang].link_copied);
+        }
+
+        function applyTheme() {
+            const color = localStorage.getItem('themeColor') || '#2ecc71';
+            const bg = localStorage.getItem('themeBg') || 'assets/imagen/fondos/fondo.jpg';
+            const dark = localStorage.getItem('themeDark') || 0.0;
+            const blur = localStorage.getItem('themeBlurValue') || 20;
+            const font = localStorage.getItem('fuentePersonalizada') || 'Afacad';
+
+            document.documentElement.style.setProperty('--neon', color);
+            document.documentElement.style.setProperty('--fuente-principal', `'${font}', sans-serif`);
+
+            document.getElementById('dynamic-theme').innerHTML += `
+                :root { 
+                    --glass-bg: rgba(0, 0, 0, 0.15); 
+                    --glass-border: ${color}33;
+                } 
+                #bg-main { 
+                    background-image: url('${bg}'); 
+                    filter: brightness(${1.1 - dark}) blur(${blur}px); 
+                }`;
+        }
+
+        window.onload = () => {
+            applyTheme();
+            applyLanguage();
+        };
+    </script>
+</body>
+</html>

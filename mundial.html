@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MUNDIAL 2026 - RUGE EL ESTADIO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style id="dynamic-theme">
+        /* --- MOTOR DE FUENTES RUGE EL ESTADIO --- */
+        @font-face { font-family: 'Jersey'; src: url('assets/fonts/Jersey.ttf'); }
+        @font-face { font-family: 'Bangers'; src: url('assets/fonts/Bangers.ttf'); }
+        @font-face { font-family: 'Smooch'; src: url('assets/fonts/SmoochSans-Bold.ttf'); }
+        @font-face { font-family: 'Afacad'; src: url('assets/fonts/Afacad-Bold.ttf'); }
+        @font-face { font-family: 'Permanent Marker'; src: url('assets/fonts/PermanentMarker.ttf'); }
+        @font-face { font-family: 'Gloria'; src: url('assets/fonts/Gloria.ttf'); }
+        @font-face { font-family: 'Goldman'; src: url('assets/fonts/Goldman-Bold.ttf'); }
+        @font-face { font-family: 'Gruppo'; src: url('assets/fonts/Gruppo.ttf'); }
+        @font-face { font-family: 'Josefin Slab'; src: url('assets/fonts/JosefinSlab-Bold.ttf'); }
+        @font-face { font-family: 'Bahianita'; src: url('assets/fonts/Bahianita.ttf'); }
+        @font-face { font-family: 'Caveat'; src: url('assets/fonts/Caveat-Bold.ttf'); }
+        @font-face { font-family: 'Rubik Iso'; src: url('assets/fonts/RubikIso.ttf'); }
+        @font-face { font-family: 'Tagesschrift'; src: url('assets/fonts/Tagesschrift.ttf'); }
+
+        :root { 
+            --neon: #2ecc71; 
+            --border: rgba(46, 204, 113, 0.2); 
+            --glass: rgba(255, 255, 255, 0.05); 
+            --fuente-principal: 'Afacad', sans-serif;
+        }
+    </style>
+
+    <style>
+        body { margin: 0; padding: 0; font-family: var(--fuente-principal); background: #000; color: white; overflow-x: hidden; }
+        button, .nav-btn, h1, h2, h3, span, p, div, td, th { font-family: var(--fuente-principal) !important; }
+
+        .bg-blur { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1; 
+            background-size: cover; background-position: center; 
+            transition: 0.5s; background-attachment: fixed;
+        }
+        
+        .header { position: fixed; top: 0; width: 100%; height: 60px; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.95); border-bottom: 2px solid var(--neon); z-index: 2000; backdrop-filter: blur(10px); }
+        .back-btn { position: absolute; left: 10px; color: var(--neon); font-size: 24px; background: transparent; border: none; cursor: pointer; padding: 10px; z-index: 2100; }
+
+        .container { padding: 80px 15px 40px; max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+
+        /* BOTÓN CON EFECTO SCANNER */
+        .api-connect-btn { width: 100%; padding: 15px; background: rgba(0,0,0,0.6); border: 2px solid var(--neon); border-radius: 12px; color: var(--neon); font-weight: 900; font-size: 11px; letter-spacing: 2px; cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; position: relative; overflow: hidden; }
+        .api-connect-btn::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(to bottom, transparent, var(--neon), transparent); opacity: 0; transition: 0.3s; pointer-events: none; }
+        .api-connect-btn.syncing::after { opacity: 0.2; animation: scan 2s linear infinite; }
+        @keyframes scan { from { transform: translateY(-50%); } to { transform: translateY(50%); } }
+
+        .api-status-dot { height: 8px; width: 8px; background: #555; border-radius: 50%; }
+        .dot-active { background: var(--neon) !important; animation: blink 1s infinite; }
+
+        /* COUNTDOWN ESTILO PRO */
+        .countdown-container { background: var(--glass); border: 1px solid var(--border); border-radius: 20px; padding: 15px; text-align: center; backdrop-filter: blur(10px); border-bottom: 2px solid var(--neon); }
+        .countdown-title { font-size: 10px; letter-spacing: 3px; color: var(--neon); margin-bottom: 12px; font-weight: 900; }
+        .timer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+        .timer-value { font-size: 24px; font-weight: 900; display: block; text-shadow: 0 0 10px var(--neon); }
+        .timer-label { font-size: 8px; text-transform: uppercase; opacity: 0.6; }
+
+        section { background: var(--glass); border: 1px solid var(--border); border-radius: 20px; padding: 20px; backdrop-filter: blur(10px); border-bottom: 3px solid var(--neon); cursor: pointer; transition: 0.3s; }
+        section:active { transform: scale(0.98); }
+        h2 { color: var(--neon); font-size: 14px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; border-left: 4px solid var(--neon); padding-left: 10px; }
+
+        .data-table { width: 100%; border-collapse: collapse; font-size: 11px; margin: 10px 0; box-sizing: border-box; }
+        .data-table th { color: var(--neon); text-align: center; padding: 10px 2px; border-bottom: 1px solid var(--border); text-transform: uppercase; font-size: 9px; opacity: 0.8; }
+        .data-table td { padding: 10px 2px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; }
+        
+        .team-cell { display: flex; align-items: center; gap: 5px; justify-content: flex-start; text-align: left; font-weight: bold; }
+        .team-flag { width: 18px; height: 12px; object-fit: contain; filter: drop-shadow(0 0 2px rgba(0,0,0,0.5)); }
+
+        .match-card { background: rgba(0,0,0,0.4); padding: 12px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; border-left: 3px solid var(--neon); }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; backdrop-filter: blur(15px); padding: 70px 10px 20px; overflow-y: auto; box-sizing: border-box; }
+        .modal-content { max-width: 700px; margin: 0 auto; background: rgba(20,20,20,0.95); border: 2px solid var(--neon); border-radius: 20px; padding: 20px 5px; position: relative; box-shadow: 0 0 30px rgba(0,0,0,0.5); box-sizing: border-box; }
+        .close-modal { position: absolute; top: 15px; right: 20px; color: var(--neon); font-size: 24px; cursor: pointer; z-index: 10; }
+
+        .video-card { background: var(--glass); border-radius: 15px; overflow: hidden; border: 1px solid var(--border); transition: 0.3s; cursor: pointer; position: relative; backdrop-filter: blur(5px); }
+        .video-placeholder { height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: rgba(0,0,0,0.5); background-size: cover; background-position: center; }
+        .play-icon { font-size: 40px; color: var(--neon); filter: drop-shadow(0 0 10px var(--neon)); }
+        .video-title { padding: 12px; font-size: 12px; text-align: center; font-weight: bold; border-top: 1px solid var(--border); }
+
+        @keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+        .animate { animation: fadeIn 0.5s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div class="bg-blur" id="bg-main"></div>
+    
+    <header class="header">
+        <button class="back-btn" onclick="location.href='index.html';"><i class="fa-solid fa-chevron-left"></i></button>
+        <h3 style="margin:0; letter-spacing: 5px; font-size: 14px; font-weight: 900;" data-key="header_title">MUNDIAL 2026</h3>
+    </header>
+
+    <div class="container">
+        <button class="api-connect-btn" id="main-api-btn" onclick="activarYConsultar()">
+            <span class="api-status-dot" id="dot"></span>
+            <span id="api-text" data-key="api_force">FORZAR ACTUALIZACIÓN SATÉLITE</span>
+        </button>
+
+        <div class="countdown-container animate" style="animation-delay: 0.1s;">
+            <div class="countdown-title" id="countdown-label">TIEMPO PARA EL DEBUT MUNDIAL</div>
+            <div class="timer-grid">
+                <div class="timer-unit"><span class="timer-value" id="days">00</span><span class="timer-label">Días</span></div>
+                <div class="timer-unit"><span class="timer-value" id="hours">00</span><span class="timer-label">Hrs</span></div>
+                <div class="timer-unit"><span class="timer-value" id="mins">00</span><span class="timer-label">Min</span></div>
+                <div class="timer-unit"><span class="timer-value" id="secs">00</span><span class="timer-label">Seg</span></div>
+            </div>
+        </div>
+
+        <section class="animate" onclick="abrirModal('apertura')">
+            <h2 data-key="title_apertura">PARTIDOS DE APERTURA</h2>
+            <div id="apertura-content">
+                <div class="match-card"><span>11 JUN</span> <b>SINCRO REQUERIDA</b> <i class="fa-solid fa-satellite-dish" style="color:var(--neon)"></i></div>
+            </div>
+        </section>
+
+        <section class="animate" style="animation-delay: 0.2s;" onclick="abrirModal('grupos')">
+            <h2 data-key="title_grupos">GRUPOS Y CLASIFICACIÓN</h2>
+            <div id="grupos-content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; text-align:center;"><b>TABLA COMPLETA</b><br><i class="fa-solid fa-ranking-star" style="color:var(--neon)"></i></div>
+                <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; text-align:center;"><b>STATS PRO</b><br><i class="fa-solid fa-microchip" style="color:var(--neon)"></i></div>
+            </div>
+        </section>
+
+        <section class="animate" style="animation-delay: 0.4s;">
+            <h2 data-key="title_videos">RESÚMENES Y NOTICIAS</h2>
+            <div id="videos-grid" style="display:flex; flex-direction:column; gap:15px;"></div>
+        </section>
+    </div>
+
+    <div id="data-modal" class="modal">
+        <div class="modal-content">
+            <i class="fa-solid fa-xmark close-modal" onclick="cerrarModal()"></i>
+            <h2 id="modal-title" style="margin-bottom:20px; text-align: center; font-size: 16px;">DATOS</h2>
+            <div id="modal-body" style="width: 100%; overflow-x: auto;"></div>
+        </div>
+    </div>
+
+    <script>
+        const dictionary = {
+            es: {
+                header_title: "MUNDIAL 2026",
+                api_force: "FORZAR ACTUALIZACIÓN SATÉLITE",
+                api_sync: "SINCRO EN CURSO...",
+                api_ok: "SINCRO EXITOSA",
+                api_fail: "MODO RESPALDO ACTIVADO",
+                title_apertura: "PARTIDOS DE APERTURA",
+                title_grupos: "GRUPOS Y CLASIFICACIÓN",
+                title_videos: "RESÚMENES Y NOTICIAS",
+                play_video: "REPRODUCIR RESUMEN",
+                col_fecha: "FECHA", col_partido: "PARTIDO", col_sede: "ESTADIO",
+                col_equipo: "EQUIPO", col_pj: "PJ", col_g: "G", col_e: "E", col_p: "P", col_pts: "PTS"
+            },
+            en: {
+                header_title: "WORLD CUP 2026",
+                api_force: "FORCE SATELLITE UPDATE",
+                api_sync: "SYNCING...",
+                api_ok: "SYNC SUCCESSFUL",
+                api_fail: "BACKUP MODE ACTIVE",
+                title_apertura: "OPENING MATCHES",
+                title_grupos: "GROUPS & STANDINGS",
+                title_videos: "HIGHLIGHTS & NEWS",
+                play_video: "PLAY HIGHLIGHTS",
+                col_fecha: "DATE", col_partido: "MATCH", col_sede: "STADIUM",
+                col_equipo: "TEAM", col_pj: "GP", col_g: "W", col_e: "D", col_p: "L", col_pts: "PTS"
+            }
+        };
+
+        const API_KEY_YT = 'AIzaSyDlQ8dCzN8PLZxYi5hS36Vw3zqOTEnmmQQ';
+        const API_KEY_FB = '67bd2c93355c47318f752d059dfa8995'; 
+        
+        let isSyncing = false;
+        let apiDataStore = { apertura: [], grupos: [] };
+        let fechaMundial = new Date('2026-06-11T12:00:00'); // Fecha base
+
+        function applyTheme() {
+            const color = localStorage.getItem('themeColor') || '#2ecc71';
+            const bg = localStorage.getItem('themeBg') || 'assets/imagen/fondos/fondo.jpg';
+            const dark = parseFloat(localStorage.getItem('themeDark')) || 0.0;
+            const blurValue = localStorage.getItem('themeBlurValue') || '20';
+            const font = localStorage.getItem('fuentePersonalizada') || 'Afacad';
+            const userLang = localStorage.getItem('userLang') || 'es';
+
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (dictionary[userLang][key]) el.innerText = dictionary[userLang][key];
+            });
+
+            document.documentElement.style.setProperty('--neon', color);
+            document.documentElement.style.setProperty('--border', color + '33');
+            document.documentElement.style.setProperty('--fuente-principal', `'${font}', sans-serif`);
+
+            const bgMain = document.getElementById('bg-main');
+            if(bgMain) {
+                bgMain.style.backgroundImage = `url('${bg}')`;
+                bgMain.style.filter = `brightness(${1.1 - dark}) blur(${blurValue}px)`;
+            }
+        }
+
+        // --- LÓGICA DEL CONTADOR ---
+        function actualizarReloj() {
+            const ahora = new Date().getTime();
+            const distancia = fechaMundial - ahora;
+
+            if (distancia < 0) {
+                document.getElementById('countdown-label').innerText = "¡EL MUNDIAL ESTÁ EN CURSO!";
+                return;
+            }
+
+            const d = Math.floor(distancia / (1000 * 60 * 60 * 24));
+            const h = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((distancia % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = d.toString().padStart(2, '0');
+            document.getElementById('hours').innerText = h.toString().padStart(2, '0');
+            document.getElementById('mins').innerText = m.toString().padStart(2, '0');
+            document.getElementById('secs').innerText = s.toString().padStart(2, '0');
+        }
+
+        async function abrirModal(tipo) {
+            const userLang = localStorage.getItem('userLang') || 'es';
+            const modal = document.getElementById('data-modal');
+            const body = document.getElementById('modal-body');
+            const title = document.getElementById('modal-title');
+            modal.style.display = 'block';
+
+            if(apiDataStore.apertura.length === 0) cargarDatosRespaldoLocal();
+
+            if(tipo === 'apertura') {
+                title.innerText = dictionary[userLang].title_apertura;
+                body.innerHTML = `
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>${dictionary[userLang].col_fecha}</th><th>${dictionary[userLang].col_partido}</th><th>${dictionary[userLang].col_sede}</th></tr>
+                        </thead>
+                        <tbody>
+                            ${apiDataStore.apertura.map(d => `<tr><td>${d.f}</td><td style="font-weight:bold">${d.p}</td><td style="font-size:10px">${d.s}</td></tr>`).join('')}
+                        </tbody>
+                    </table>`;
+            } else {
+                title.innerText = dictionary[userLang].title_grupos;
+                body.innerHTML = `
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="text-align:left; padding-left:10px;">${dictionary[userLang].col_equipo}</th>
+                                <th>${dictionary[userLang].col_pj}</th>
+                                <th>${dictionary[userLang].col_g}</th>
+                                <th>${dictionary[userLang].col_e}</th>
+                                <th>${dictionary[userLang].col_p}</th>
+                                <th style="color:var(--neon)">${dictionary[userLang].col_pts}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${apiDataStore.grupos.map(g => `
+                                <tr>
+                                    <td class="team-cell"><img src="${g.img}" class="team-flag" onerror="this.style.display='none'"> ${g.e}</td>
+                                    <td>${g.pj}</td>
+                                    <td>${g.w}</td>
+                                    <td>${g.d}</td>
+                                    <td>${g.l}</td>
+                                    <td style="font-weight:bold; color:var(--neon)">${g.p}</td>
+                                </tr>`).join('')}
+                        </tbody>
+                    </table>`;
+            }
+        }
+
+        function cargarDatosRespaldoLocal() {
+            apiDataStore.apertura = [
+                {f:"11/06", p:"MÉXICO vs A2", s:"ESTADIO AZTECA"},
+                {f:"12/06", p:"CANADÁ vs B2", s:"BMO FIELD"},
+                {f:"12/06", p:"USA vs D2", s:"SOFI STADIUM"}
+            ];
+            apiDataStore.grupos = [
+                {e:"MÉXICO", img:"", pj:0, w:0, d:0, l:0, p:0},
+                {e:"ARGENTINA", img:"", pj:0, w:0, d:0, l:0, p:0},
+                {e:"COLOMBIA", img:"", pj:0, w:0, d:0, l:0, p:0},
+                {e:"ESPAÑA", img:"", pj:0, w:0, d:0, l:0, p:0}
+            ];
+        }
+
+        function cerrarModal() { document.getElementById('data-modal').style.display = 'none'; }
+
+        async function activarYConsultar() {
+            if (isSyncing) return;
+            const userLang = localStorage.getItem('userLang') || 'es';
+            const dot = document.getElementById('dot');
+            const text = document.getElementById('api-text');
+            const btn = document.getElementById('main-api-btn');
+            
+            isSyncing = true;
+            dot.classList.add('dot-active');
+            btn.classList.add('syncing');
+            text.innerText = dictionary[userLang].api_sync;
+
+            try {
+                // 1. YOUTUBE
+                const respYT = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=3&q=FIFA+World+Cup+2026+official+updates&type=video&key=${API_KEY_YT}`);
+                const dataYT = await respYT.json();
+                if (dataYT.items) renderVideos(dataYT.items);
+
+                // 2. FOOTBALL-DATA API
+                const respFB = await fetch('https://api.football-data.org/v4/competitions/WC/standings', {
+                    headers: { 'X-Auth-Token': API_KEY_FB }
+                });
+                const dataFB = await respFB.json();
+
+                if (dataFB.standings && dataFB.standings.length > 0) {
+                    apiDataStore.grupos = [];
+                    dataFB.standings.forEach(group => {
+                        group.table.forEach(item => {
+                            apiDataStore.grupos.push({
+                                e: item.team.tla || item.team.name,
+                                img: item.team.crest,
+                                pj: item.playedGames,
+                                w: item.won,
+                                d: item.draw,
+                                l: item.lost,
+                                p: item.points
+                            });
+                        });
+                    });
+
+                    // Partidos y Fecha del Contador
+                    const respMT = await fetch('https://api.football-data.org/v4/competitions/WC/matches?status=SCHEDULED', {
+                        headers: { 'X-Auth-Token': API_KEY_FB }
+                    });
+                    const dataMT = await respMT.json();
+                    
+                    if(dataMT.matches && dataMT.matches.length > 0) {
+                        // Actualizar fecha del contador con el primer partido oficial
+                        fechaMundial = new Date(dataMT.matches[0].utcDate);
+                        
+                        apiDataStore.apertura = dataMT.matches.slice(0, 8).map(m => ({
+                            f: new Date(m.utcDate).toLocaleDateString('es-ES', {day:'2-digit', month:'2-digit'}),
+                            p: `${m.homeTeam.tla || 'TBD'} vs ${m.awayTeam.tla || 'TBD'}`,
+                            s: m.venue || "FIFA VENUE"
+                        }));
+                    }
+                }
+
+                text.innerText = dictionary[userLang].api_ok;
+            } catch (e) {
+                text.innerText = dictionary[userLang].api_fail;
+                cargarDatosRespaldoLocal();
+            } finally {
+                dot.classList.remove('dot-active');
+                btn.classList.remove('syncing');
+                isSyncing = false;
+            }
+        }
+
+        function renderVideos(items) {
+            let html = '';
+            items.forEach(item => {
+                html += `
+                <div class="video-card" onclick="window.open('https://www.youtube.com/watch?v=${item.id.videoId}', '_blank')">
+                    <div class="video-placeholder" style="background-image: url('${item.snippet.thumbnails.high.url}')">
+                        <i class="fa-solid fa-circle-play play-icon"></i>
+                    </div>
+                    <div class="video-title">${item.snippet.title}</div>
+                </div>`;
+            });
+            document.getElementById('videos-grid').innerHTML = html;
+        }
+
+        window.onload = () => {
+            applyTheme();
+            cargarDatosRespaldoLocal();
+            activarYConsultar();
+            setInterval(actualizarReloj, 1000);
+        };
+    </script>
+</body>
+</html>

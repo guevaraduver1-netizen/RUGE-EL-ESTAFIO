@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Stadium Beats - Música</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style id="dynamic-theme">
+        /* --- MOTOR DE FUENTES LOCALES RUGE EL ESTADIO --- */
+        @font-face { font-family: 'Jersey'; src: url('assets/fonts/Jersey.ttf'); }
+        @font-face { font-family: 'Bangers'; src: url('assets/fonts/Bangers.ttf'); }
+        @font-face { font-family: 'Smooch'; src: url('assets/fonts/SmoochSans-Bold.ttf'); }
+        @font-face { font-family: 'Afacad'; src: url('assets/fonts/Afacad-Bold.ttf'); }
+        @font-face { font-family: 'Permanent Marker'; src: url('assets/fonts/PermanentMarker.ttf'); }
+        @font-face { font-family: 'Gloria'; src: url('assets/fonts/Gloria.ttf'); }
+        @font-face { font-family: 'Goldman'; src: url('assets/fonts/Goldman-Bold.ttf'); }
+        @font-face { font-family: 'Gruppo'; src: url('assets/fonts/Gruppo.ttf'); }
+        @font-face { font-family: 'Josefin Slab'; src: url('assets/fonts/JosefinSlab-Bold.ttf'); }
+        @font-face { font-family: 'Bahianita'; src: url('assets/fonts/Bahianita.ttf'); }
+        @font-face { font-family: 'Caveat'; src: url('assets/fonts/Caveat-Bold.ttf'); }
+        @font-face { font-family: 'Rubik Iso'; src: url('assets/fonts/RubikIso.ttf'); }
+        @font-face { font-family: 'Tagesschrift'; src: url('assets/fonts/Tagesschrift.ttf'); }
+
+        :root { 
+            --neon: #2ecc71; 
+            --border: rgba(46, 204, 113, 0.2); 
+            --glass: rgba(0, 0, 0, 0.15); 
+            --fuente-principal: 'Afacad', sans-serif;
+        }
+    </style>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            margin: 0; padding: 0; 
+            font-family: var(--fuente-principal); 
+            background: #000; color: white; overflow-x: hidden; 
+        }
+
+        .header h3, .tab-btn, .search-input, .folder-card span, .song-info div, .current-info, .btn-back-folder {
+            font-family: var(--fuente-principal) !important;
+        }
+        
+        .bg-blur { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background-repeat: no-repeat; background-position: center center;
+            background-size: cover; background-attachment: fixed; z-index: -1; 
+            transition: filter 0.5s ease;
+        }
+
+        .header { 
+            position: fixed; top: 0; width: 100%; padding: 18px 0; 
+            text-align: center; background: rgba(0, 0, 0, 0.8); 
+            border-bottom: 2px solid var(--neon); z-index: 1000; 
+            backdrop-filter: blur(10px);
+        }
+
+        .container { padding: 90px 20px 180px; box-sizing: border-box; }
+
+        .search-box { position: relative; margin-bottom: 20px; animation: slideUp 0.4s ease; width: 100%;}
+        .search-input {
+            width: 100%; background: var(--glass); border: 1px solid var(--border);
+            border-radius: 12px; padding: 12px 15px 12px 40px; color: #ffffff;
+            font-size: 14px; outline: none; backdrop-filter: blur(1px);
+        }
+        .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--neon); opacity: 0.6; }
+
+        .tabs { display: flex; justify-content: space-around; margin-bottom: 20px; background: var(--glass); border-radius: 12px; padding: 5px; }
+        .tab-btn { background: none; border: none; color: white; padding: 12px; font-weight: 900; font-size: 11px; cursor: pointer; flex: 1; border-radius: 8px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
+        .tab-btn.active { background: var(--neon); color: black; }
+
+        .folder-card, .music-card {
+            background: rgba(0, 0, 0, 0.45); 
+            border: 1px solid var(--border);
+            border-radius: 15px; padding: 12px; margin-bottom: 12px;
+            display: flex; align-items: center; justify-content: space-between;
+            animation: slideUp 0.4s ease;
+            backdrop-filter: blur(5px);
+        }
+        .folder-img { width: 50px; height: 50px; border-radius: 10px; object-fit: cover; margin-right: 15px; border: 1px solid var(--border); }
+        .song-info { flex: 1; }
+        
+        .btn-fav { background: none; border: none; color: white; font-size: 20px; margin-right: 15px; transition: 0.3s ease; cursor: pointer; }
+        .btn-fav.active { color: #ff4757; transform: scale(1.1); }
+
+        .player-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            background: rgba(0,0,0,0.85); border-top: 2px solid var(--neon); 
+            padding: 15px 0; backdrop-filter: blur(20px); z-index: 2000;
+            text-align: center;
+        }
+
+        .current-info-container { width: 90%; overflow: hidden; margin: 0 auto; white-space: nowrap; }
+        .current-info { display: inline-block; font-size: 10px; font-weight: 900; letter-spacing: 2px; color: var(--neon); animation: marquee 15s linear infinite; text-transform: uppercase; }
+
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .btn-back-folder { display: inline-block; margin-bottom: 15px; color: var(--neon); font-size: 12px; font-weight: 900; text-decoration: none; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+  
+    <div class="bg-blur" id="bg-main"></div>
+
+    <header class="header">
+        <a href="index.html" style="position:absolute; left:20px; color:var(--neon); font-size: 18px;"><i class="fa-solid fa-arrow-left"></i></a>
+        <h3 style="margin:0; letter-spacing: 5px; font-size: 14px; font-weight: 900;" data-key="drop_music">MÚSICA</h3>
+    </header>
+
+    <div class="container">
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" class="search-input" id="songSearch" placeholder= "Buscar canción o equipo..." onkeyup="searchSongs()">
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" id="tab-equipos" onclick="changeTab('equipos')" data-key="tab_teams">EQUIPOS</button>
+            <button class="tab-btn" id="tab-local" onclick="changeTab('local')" data-key="tab_local">LOCAL</button>
+            <button class="tab-btn" id="tab-hits" onclick="changeTab('hits')" data-key="tab_hits">HITS</button>
+        </div>
+
+        <div id="content-area"></div>
+    </div>
+
+    <div class="player-bar">
+        <div class="current-info-container">
+            <div class="current-info" id="current-song-display" data-key="music_slogan">EL RUGIDO DE UN HINCHA EN LA CANCHA ES EQUIVALENTE A EL SUDOR DEL JUGADOR - RUGE EL ESTADIO PORQUE LA PASIÓN NO CALLA</div>
+        </div>
+        <p style="font-size: 8px; opacity: 0.5; margin-top: 5px;">CONTENIDO REPRODUCIDO VÍA YOUTUBE (EXTERNO)</p>
+    </div>
+
+    <script>
+        const dictionary = {
+            es: {
+                drop_music: "MÚSICA", tab_teams: "EQUIPOS", tab_local: "LOCAL", tab_hits: "HITS",
+                search_placeholder: "Buscar canción o equipo...", btn_back: "VOLVER",
+                no_favs: "AÚN NO TIENES FAVORITOS", no_results: "NO SE ENCONTRARON RESULTADOS",
+                playing_text: "ABRIENDO EN YOUTUBE: ",
+                music_slogan: "EL RUGIDO DE UN HINCHA EN LA CANCHA ES EQUIVALENTE A EL SUDOR DEL JUGADOR - RUGE EL ESTADIO PORQUE LA PASIÓN NO CALLA"
+            },
+            en: {
+                drop_music: "MUSIC", tab_teams: "TEAMS", tab_local: "LOCAL", tab_hits: "HITS",
+                search_placeholder: "Search song or team...", btn_back: "BACK",
+                no_favs: "NO FAVORITES YET", no_results: "NO RESULTS FOUND",
+                playing_text: "OPENING ON YOUTUBE: ",
+                music_slogan: "A FAN'S ROAR ON THE FIELD IS EQUIVALENT TO THE PLAYER'S SWEAT - RUGE EL ESTADIO BECAUSE PASSION NEVER STAYS SILENT"
+            }
+        };
+
+        const DATA = {
+            equipos: [
+                { id: 'e1', name: 'Real Madrid', img: 'assets/imagen/logos/madrid.jpg', songs: [
+                    { id: 's101', title: 'Hala Madrid y Nada Más', artist: 'Real Madrid', file: 'https://www.youtube.com/watch?v=A8vN0pZ_i3w' },
+                    { id: 's102', title: 'Himno del Centenario', artist: 'Plácido Domingo', file: 'https://www.youtube.com/watch?v=6m3X636P60c' }
+                ]},
+                { id: 'e2', name: 'Liverpool FC', img: 'assets/imagen/logos/liverpool.jpg', songs: [
+                    { id: 's103', title: 'You\'ll Never Walk Alone', artist: 'Gerry & The Pacemakers', file: 'https://www.youtube.com/watch?v=OV5_LQArLa0' }
+                ]},
+                { id: 'e3', name: 'Boca Juniors', img: 'assets/imagen/logos/boca.jpg', songs: [
+                    { id: 's104', title: 'Himno Boca Juniors', artist: 'Hinchada', file: 'https://www.youtube.com/watch?v=F3S2M7Oq6D8' }
+                ]}
+            ],
+            local: [
+                { id: 'l1', name: 'Atlético Nacional', img: 'assets/imagen/logos/nacional.jpg', songs: [
+                    { id: 's201', title: 'Pregón Verde', artist: 'Orquesta Los Núñez', file: 'https://www.youtube.com/watch?v=pD4I89-VOfA' }
+                ]},
+                { id: 'l2', name: 'Ind. Medellín', img: 'assets/imagen/logos/dim.jpg', songs: [
+                    { id: 's202', title: 'Rojo Mi Buen Amigo', artist: 'Hinchada', file: 'https://www.youtube.com/watch?v=jW0S-Q_3FzQ' }
+                ]},
+                { id: 'l3', name: 'Selección Colombia', img: 'assets/imagen/logos/colombia.jpg', songs: [
+                    { id: 's203', title: 'El Ritmo Que Nos Une', artist: 'Ryan Castro', file: 'https://youtu.be/6Y1dtxb-2lE?si=mMTEowkN_mphnf_Y' },
+                    { id: 's204', title: 'Colombia Tierra Querida', artist: 'Lucho Bermúdez', file: 'https://www.youtube.com/watch?v=oV8XfW6D4S0' }
+                ]}
+            ]
+        };
+
+        let activeTab = 'equipos';
+
+        function applyLanguage() {
+            const lang = localStorage.getItem('userLang') || 'es';
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (dictionary[lang][key]) el.innerText = dictionary[lang][key];
+            });
+            document.getElementById('songSearch').placeholder = dictionary[lang].search_placeholder;
+        }
+
+        function applyTheme() {
+            const color = localStorage.getItem('themeColor') || '#2ecc71';
+            const bg = localStorage.getItem('themeBg') || 'assets/imagen/fondos/fondo.jpg';
+            const dark = localStorage.getItem('themeDark') || 0.5;
+            const blur = localStorage.getItem('themeBlurValue') || 20;
+            const font = localStorage.getItem('fuentePersonalizada') || 'Afacad';
+
+            document.documentElement.style.setProperty('--neon', color);
+            document.documentElement.style.setProperty('--border', color + '33');
+            document.documentElement.style.setProperty('--fuente-principal', `'${font}', sans-serif`);
+
+            const bgMain = document.getElementById('bg-main');
+            if(bgMain) {
+                bgMain.style.backgroundImage = `url('${bg}')`;
+                bgMain.style.filter = `brightness(${1.1 - dark}) blur(${blur}px)`;
+            }
+        }
+
+        function changeTab(tab) {
+            activeTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            if(tab === 'hits') renderHits(); else renderFolders(tab);
+        }
+
+        function renderFolders(category) {
+            const area = document.getElementById('content-area');
+            area.innerHTML = '';
+            DATA[category].forEach(item => {
+                area.innerHTML += `
+                    <div class="folder-card" onclick="renderSongs('${category}', '${item.id}')">
+                        <div style="display:flex; align-items:center">
+                            <img src="${item.img}" class="folder-img">
+                            <span style="font-weight:900">${item.name.toUpperCase()}</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right" style="opacity:0.3"></i>
+                    </div>`;
+            });
+        }
+
+        function renderSongs(category, folderId) {
+            const lang = localStorage.getItem('userLang') || 'es';
+            const area = document.getElementById('content-area');
+            const team = DATA[category].find(t => t.id === folderId);
+            area.innerHTML = `<a href="#" class="btn-back-folder" onclick="renderFolders('${category}')"><i class="fa-solid fa-arrow-left"></i> ${dictionary[lang].btn_back}</a>`;
+            team.songs.forEach(song => { area.innerHTML += createSongCard(song); });
+        }
+
+        function createSongCard(song) {
+            const isFav = localStorage.getItem('fav_' + song.id);
+            return `
+                <div class="music-card">
+                    <div class="song-info">
+                        <div style="font-size:14px; font-weight:bold">${song.title}</div>
+                        <div style="font-size:11px; opacity:0.5">${song.artist}</div>
+                    </div>
+                    <button class="btn-fav ${isFav ? 'active' : ''}" onclick="toggleFav('${song.id}', '${song.title}', '${song.artist}', '${song.file}')">
+                        <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
+                    </button>
+                    <i class="fa-brands fa-youtube" style="color:#ff0000; font-size:32px; cursor:pointer" onclick="playSong('${song.file}', '${song.title}')"></i>
+                </div>`;
+        }
+
+        function toggleFav(id, title, artist, file) {
+            event.stopPropagation();
+            const key = 'fav_' + id;
+            const dataKey = 'songData_' + id;
+
+            if(localStorage.getItem(key)) {
+                localStorage.removeItem(key);
+                localStorage.removeItem(dataKey);
+            } else {
+                localStorage.setItem(key, 'true');
+                localStorage.setItem(dataKey, JSON.stringify({ id, title, artist, file }));
+            }
+            
+            if(activeTab === 'hits') renderHits();
+            else {
+                const btn = event.currentTarget;
+                btn.classList.toggle('active');
+                btn.querySelector('i').className = btn.classList.contains('active') ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+            }
+        }
+
+        function renderHits() {
+            const lang = localStorage.getItem('userLang') || 'es';
+            const area = document.getElementById('content-area');
+            area.innerHTML = '';
+            let hasHits = false;
+
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('songData_')) {
+                    const song = JSON.parse(localStorage.getItem(key));
+                    area.innerHTML += createSongCard(song);
+                    hasHits = true;
+                }
+            }
+
+            if(!hasHits) {
+                area.innerHTML = `<p style="text-align:center; opacity:0.4; margin-top:50px;">${dictionary[lang].no_favs}</p>`;
+            }
+        }
+
+        function searchSongs() {
+            const lang = localStorage.getItem('userLang') || 'es';
+            const query = document.getElementById('songSearch').value.toLowerCase();
+            const area = document.getElementById('content-area');
+            if(query === "") { changeTab(activeTab); return; }
+
+            area.innerHTML = '';
+            let found = false;
+            [...DATA.equipos, ...DATA.local].forEach(group => {
+                group.songs.forEach(song => {
+                    if(song.title.toLowerCase().includes(query) || group.name.toLowerCase().includes(query)) {
+                        area.innerHTML += createSongCard(song);
+                        found = true;
+                    }
+                });
+            });
+            if(!found) area.innerHTML = `<p style="text-align:center; opacity:0.4;">${dictionary[lang].no_results}</p>`;
+        }
+
+        function playSong(url, title) {
+            const lang = localStorage.getItem('userLang') || 'es';
+            document.getElementById('current-song-display').innerText = dictionary[lang].playing_text + title.toUpperCase();
+            
+            // Abre el link de YouTube en una pestaña nueva o en la app de YouTube
+            window.open(url, '_blank');
+        }
+
+        window.onload = () => {
+            applyTheme();
+            applyLanguage();
+            renderFolders('equipos');
+        };
+    </script>
+</body>
+</html>
